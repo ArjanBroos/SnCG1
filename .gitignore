@@ -1,7 +1,6 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
-*.vcxproj
 
 #Visual Studio files
 *.[Oo]bj
@@ -10,6 +9,7 @@
 *.pch
 *.vspscc
 *.vssscc
+*.vcxproj
 *_i.c
 *_p.c
 *.ncb
