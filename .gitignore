@@ -1,6 +1,7 @@
 #OS junk files
 [Tt]humbs.db
 *.DS_Store
+*.vcxproj
 
 #Visual Studio files
 *.[Oo]bj
@@ -38,5 +39,3 @@ ipch/
 
 #Test files
 *.testsettings
-
-*.vcxproj
