@@ -38,3 +38,5 @@ ipch/
 
 #Test files
 *.testsettings
+
+*.vcxproj
