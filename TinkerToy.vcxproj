@@ -37,13 +37,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-  <IncludePath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\libpng-zlib\include;D:\Downloads\glut\include;D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\libpng-zlib\lib;D:\Downloads\glut\lib;D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\libpng-zlib\include;D:\Downloads\glut\include;D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\libpng-zlib\lib;D:\Downloads\glut\lib;D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
