@@ -1,4 +1,5 @@
 #include "imageio.h"
+#include <direct.h>
 
 // ***** generic internal functions ***** //
 
@@ -111,9 +112,11 @@ unsigned char *_loadImageRGBApng(char *fileName, int *width, int *height) {
 bool _saveImageRGBApng(char *fileName, unsigned char *buffer, int width, int height) {
   // open the file
   FILE *fp;
+  mkdir("snapshots");
   fopen_s(&fp, fileName, "wb");
-  if (!fp)
-    return false;
+  if (!fp){
+	  return false;
+  }
 
   // create the needed data structures
   png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
