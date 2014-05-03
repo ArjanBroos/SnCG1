@@ -37,8 +37,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
