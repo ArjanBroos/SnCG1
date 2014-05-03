@@ -37,14 +37,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>D:\Downloads\glut\lib;D:\Downloads\libpng-zlib\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>D:\Downloads\libpng-zlib\include;D:\Downloads\glut\include;$(IncludePath)</IncludePath>
+  <IncludePath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Downloads\libpng-zlib\include;D:\Downloads\glut\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Downloads\glut\lib;D:\Downloads\libpng-zlib\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+    <IncludePath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\include;D:\Libraries\glut-3.7.6-bin\include;D:\Libraries\GnuWin32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Documents\TUe\SimulationInComputerGraphics\libraries\lib;D:\Libraries\glut-3.7.6-bin\lib;D:\Libraries\GnuWin32\lib;$(LibraryPath)</LibraryPath>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -79,9 +78,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CircularWireConstraint.cpp" />
+    <ClCompile Include="GravityForce.cpp" />
     <ClCompile Include="imageio.cpp" />
     <ClCompile Include="linearSolver.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="RodConstraint.cpp" />
     <ClCompile Include="Solver.cpp" />
     <ClCompile Include="SpringForce.cpp" />
@@ -89,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircularWireConstraint.h" />
+    <ClInclude Include="Constraint.h" />
+    <ClInclude Include="Force.h" />
+    <ClInclude Include="GravityForce.h" />
     <ClInclude Include="imageio.h" />
     <ClInclude Include="include\gfx\config.h" />
     <ClInclude Include="include\gfx\geom3d.h" />
@@ -106,6 +110,7 @@
     <ClInclude Include="include\gfx\vec4.h" />
     <ClInclude Include="linearSolver.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="RodConstraint.h" />
     <ClInclude Include="SpringForce.h" />
   </ItemGroup>
