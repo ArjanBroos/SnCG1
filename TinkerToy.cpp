@@ -3,6 +3,7 @@
 
 #include "Particle.h"
 #include "SpringForce.h"
+#include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
 #include "imageio.h"
@@ -11,11 +12,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <GL/glut.h>
-
-/* macros */
+#include "ParticleSystem.h"
 
 /* external definitions (from solver) */
-extern void simulation_step( std::vector<Particle*> pVector, float dt );
+extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
 
 /* global variables */
 
@@ -25,9 +25,6 @@ static int dsim;
 static int dump_frames;
 static int frame_number;
 
-// static Particle *pList;
-static std::vector<Particle*> pVector;
-
 static int win_id;
 static int win_x, win_y;
 static int mouse_down[3];
@@ -36,41 +33,13 @@ static int mouse_shiftclick[3];
 static int omx, omy, mx, my;
 static int hmx, hmy;
 
-static SpringForce * delete_this_dummy_spring = NULL;
-static RodConstraint * delete_this_dummy_rod = NULL;
-static CircularWireConstraint * delete_this_dummy_wire = NULL;
-
-
-/*
-----------------------------------------------------------------------
-free/clear/allocate simulation data
-----------------------------------------------------------------------
-*/
-
-static void free_data ( void )
-{
-	pVector.clear();
-	if (delete_this_dummy_rod) {
-		delete delete_this_dummy_rod;
-		delete_this_dummy_rod = NULL;
-	}
-	if (delete_this_dummy_spring) {
-		delete delete_this_dummy_spring;
-		delete_this_dummy_spring = NULL;
-	}
-	if (delete_this_dummy_wire) {
-		delete delete_this_dummy_wire;
-		delete_this_dummy_wire = NULL;
-	}
-}
+ParticleSystem particleSystem;
 
 static void clear_data ( void )
 {
-	int ii, size = pVector.size();
-
-	for(ii=0; ii<size; ii++){
-		pVector[ii]->reset();
-	}
+	auto& particles = particleSystem.GetParticles();
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		(*p)->Reset();
 }
 
 static void init_system(void)
@@ -81,16 +50,19 @@ static void init_system(void)
 
 	// Create three particles, attach them to each other, then add a
 	// circular wire constraint to the first.
-
-	pVector.push_back(new Particle(center + offset));
-	pVector.push_back(new Particle(center + offset + offset));
-	pVector.push_back(new Particle(center + offset + offset + offset));
+	particleSystem.AddParticle(new Particle(center + offset));
+	particleSystem.AddParticle(new Particle(center + offset + offset));
+	particleSystem.AddParticle(new Particle(center + offset + offset + offset));
 	
 	// You shoud replace these with a vector generalized forces and one of
 	// constraints...
-	delete_this_dummy_spring = new SpringForce(pVector[0], pVector[1], dist, 1.0, 1.0);
-	delete_this_dummy_rod = new RodConstraint(pVector[1], pVector[2], dist);
-	delete_this_dummy_wire = new CircularWireConstraint(pVector[0], center, dist);
+	// Add gravity to all particles
+	auto& particles = particleSystem.GetParticles();
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new GravityForce(*p));
+	particleSystem.AddForce(new SpringForce(particles[0], particles[1], dist, 1.0, 1.0));
+	particleSystem.AddConstraint(new RodConstraint(particles[1], particles[2], dist));
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
 }
 
 /*
@@ -98,7 +70,6 @@ static void init_system(void)
 OpenGL specific drawing routines
 ----------------------------------------------------------------------
 */
-
 static void pre_display ( void )
 {
 	glViewport ( 0, 0, win_x, win_y );
@@ -137,28 +108,23 @@ static void post_display ( void )
 
 static void draw_particles ( void )
 {
-	int size = pVector.size();
-
-	for(int ii=0; ii< size; ii++)
-	{
-		pVector[ii]->draw();
-	}
+	auto& particles = particleSystem.GetParticles();
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		(*p)->Draw();
 }
 
 static void draw_forces ( void )
 {
-	// change this to iteration over full set
-	if (delete_this_dummy_spring)
-		delete_this_dummy_spring->draw();
+	auto& forces = particleSystem.GetForces();
+	for (auto f = forces.begin(); f != forces.end(); f++)
+		(*f)->Draw();
 }
 
 static void draw_constraints ( void )
 {
-	// change this to iteration over full set
-	if (delete_this_dummy_rod)
-		delete_this_dummy_rod->draw();
-	if (delete_this_dummy_wire)
-		delete_this_dummy_wire->draw();
+	auto& constraints = particleSystem.GetConstraints();
+	for (auto c = constraints.begin(); c != constraints.end(); c++)
+		(*c)->Draw();
 }
 
 /*
@@ -166,7 +132,6 @@ static void draw_constraints ( void )
 relates mouse movements to tinker toy construction
 ----------------------------------------------------------------------
 */
-
 static void get_from_UI ()
 {
 	int i, j;
@@ -200,12 +165,14 @@ static void get_from_UI ()
 
 static void remap_GUI()
 {
+	/*
 	int ii, size = pVector.size();
 	for(ii=0; ii<size; ii++)
 	{
 		pVector[ii]->m_Position[0] = pVector[ii]->m_ConstructPos[0];
 		pVector[ii]->m_Position[1] = pVector[ii]->m_ConstructPos[1];
 	}
+	*/
 }
 
 /*
@@ -213,7 +180,6 @@ static void remap_GUI()
 GLUT callback routines
 ----------------------------------------------------------------------
 */
-
 static void key_func ( unsigned char key, int x, int y )
 {
 	switch ( key )
@@ -230,7 +196,7 @@ static void key_func ( unsigned char key, int x, int y )
 
 	case 'q':
 	case 'Q':
-		free_data ();
+		particleSystem.Clear();
 		exit ( 0 );
 		break;
 
@@ -268,11 +234,15 @@ static void reshape_func ( int width, int height )
 
 static void idle_func ( void )
 {
-	if ( dsim ) simulation_step( pVector, dt );
-	else        {get_from_UI();remap_GUI();}
+	if (dsim) {
+		ExplicitEulerStep(particleSystem, dt);
+	} else {
+		get_from_UI();
+		remap_GUI();
+	}
 
-	glutSetWindow ( win_id );
-	glutPostRedisplay ();
+	glutSetWindow(win_id);
+	glutPostRedisplay();
 }
 
 static void display_func ( void )
@@ -292,7 +262,6 @@ static void display_func ( void )
 open_glut_window --- open a glut compatible window and set callbacks
 ----------------------------------------------------------------------
 */
-
 static void open_glut_window ( void )
 {
 	glutInitDisplayMode ( GLUT_RGBA | GLUT_DOUBLE );
@@ -326,14 +295,13 @@ static void open_glut_window ( void )
 main --- main routine
 ----------------------------------------------------------------------
 */
-
 int main ( int argc, char ** argv )
 {
 	glutInit ( &argc, argv );
 
 	if ( argc == 1 ) {
 		N = 64;
-		dt = 0.1f;
+		dt = 0.0001f;
 		d = 5.f;
 		fprintf ( stderr, "Using defaults : N=%d dt=%g d=%g\n",
 			N, dt, d );

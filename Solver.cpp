@@ -1,18 +1,21 @@
 #include "Particle.h"
+#include "ParticleSystem.h"
 
 #include <vector>
 
-#define DAMP 0.98f
-#define RAND (((rand()%2000)/1000.f)-1.f)
-void simulation_step( std::vector<Particle*> pVector, float dt )
-{
-	int ii, size = pVector.size();
-	
-	for(ii=0; ii<size; ii++)
-	{
-		pVector[ii]->m_Position += dt*pVector[ii]->m_Velocity;
-		pVector[ii]->m_Velocity = DAMP*pVector[ii]->m_Velocity + Vec2f(RAND,RAND) * 0.005f;
+void ExplicitEulerStep(ParticleSystem& particleSystem, float dt) {
+	// Retrieve current state
+	auto& particles = particleSystem.GetParticles();
+
+	// Evaluate derivatives
+	std::vector<Vec2f> derivatives;
+	particleSystem.DerivEval(derivatives);
+
+	// Set new state
+	for (unsigned pi = 0; pi < particles.size(); pi++) {
+		Particle* p = particles[pi];
+		const unsigned di = pi*2; // Derivative Index
+		p->m_Position += derivatives[di] * dt;
+		p->m_Velocity += derivatives[di+1] * dt;
 	}
-
 }
-

@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Particle.h"
+#include "Constraint.h"
 
-class CircularWireConstraint {
+class CircularWireConstraint : public Constraint {
  public:
   CircularWireConstraint(Particle *p, const Vec2f & center, const double radius);
 
-  void draw();
+  void Draw() const;
+  void Apply();
 
  private:
 
