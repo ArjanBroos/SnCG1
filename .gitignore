@@ -9,6 +9,7 @@
 *.pch
 *.vspscc
 *.vssscc
+*.vcxproj
 *_i.c
 *_p.c
 *.ncb
