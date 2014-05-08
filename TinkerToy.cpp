@@ -16,6 +16,7 @@
 
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
+extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 
 /* global variables */
 
@@ -235,7 +236,7 @@ static void reshape_func ( int width, int height )
 static void idle_func ( void )
 {
 	if (dsim) {
-		ExplicitEulerStep(particleSystem, dt);
+		MidPointStep(particleSystem, dt);
 	} else {
 		get_from_UI();
 		remap_GUI();
