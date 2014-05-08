@@ -107,10 +107,10 @@
     <ClInclude Include="include\gfx\vec4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
+    <ClInclude Include="Force.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Force.h">
+    <ClInclude Include="ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Constraint.h">
