@@ -2,13 +2,18 @@
 
 #include "Particle.h"
 #include "Constraint.h"
+#include <vector>
 
 class CircularWireConstraint : public Constraint {
  public:
   CircularWireConstraint(Particle *p, const Vec2f & center, const double radius);
 
   void Draw() const;
-  void Apply();
+  double getC();
+  double getCdot();
+  std::vector<Vec2f> getJ();
+  std::vector<Vec2f> getJdot();
+  std::vector<Particle> getParticles();
 
  private:
 

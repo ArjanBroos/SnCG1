@@ -1,4 +1,5 @@
 #include "linearSolver.h"
+using namespace std;
 
 // vector helper functions
 
@@ -122,3 +123,65 @@ double ConjGrad(int n, implicitMatrix *A, double x[], double b[],
 }
 
 
+//Matrix helper functions
+
+/*
+* Return A*B
+*/
+vector< vector<float> > mul(vector< vector<float> > A, vector< vector<float> > B) {
+
+	if (A[0].size() != B.size()) {
+		printf("Error: Matrix multiplication dimension does not match! \n");
+		exit(1); //error!
+	}
+	vector< vector<float> > R(A.size(), vector<float>(B[0].size()));
+
+	for (int i = 0; i<A.size(); i++) {
+		for (int j = 0; j<B[0].size(); j++) {
+			R[i][j] = 0;
+			for (int k = 0; k<A[0].size(); k++)
+				R[i][j] += A[i][k] * B[k][j];
+		}
+	}
+
+	return R;
+}
+
+/*
+* Return A*b(b is a vector, not a matrix)
+*/
+ vector<float>  vecmul(vector< vector<float> > A, vector<float>  B) {
+
+	if (A[0].size() != B.size()) {
+		printf("Error: Matrix multiplication dimension does not match! \n");
+		exit(1); //error!
+	}
+	vector<float>  R(A.size());
+
+	for (int i = 0; i<A.size(); i++) {
+		R[i] = 0;
+		for (int k = 0; k<B.size(); k++)
+			R[i] += A[i][k] * B[k];
+	}
+	
+
+	return R;
+}
+
+ vector<float> diffEqual(vector<float> r, vector<float> v)
+ {
+	 vector<float> result(r.size());
+	 for (int i = 0; i < r.size(); i++)
+		 result[i] = r[i] - v[i];
+	 return result;
+ }
+
+ vector<float> timesScalar(vector<float> r, float s)
+ {
+	 vector<float> result(r.size());
+	 for (int i = 0; i < r.size(); i++)
+		 result[i] = r[i]* s;
+	 return result;
+ }
+
+ 

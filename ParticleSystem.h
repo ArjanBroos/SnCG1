@@ -37,6 +37,9 @@ public:
 	// Removes everything from the system
 	void							Clear();
 
+	// Compute and apply the constraint forces
+	void							ComputeApplyConstForce();
+
 private:
 	std::vector<Particle*>			particles;
 	std::vector<Force*>				forces;

@@ -1,5 +1,6 @@
 #include "CircularWireConstraint.h"
 #include <GL/glut.h>
+using namespace std;
 
 #define PI 3.1415926535897932384626433832795
 
@@ -23,5 +24,31 @@ void CircularWireConstraint::Draw() const
 	draw_circle(m_center, m_radius);
 }
 
-void CircularWireConstraint::Apply() {
+// return the c: C(x, y) = (x - xc)^2 + (y - yc)^2 - r^2
+double CircularWireConstraint::getC(){
+	return (m_p->m_Position[0] - m_center[0])*(m_p->m_Position[0] - m_center[0]) + (m_p->m_Position[1] - m_center[1])*(m_p->m_Position[1] - m_center[1]) - m_radius*m_radius;
+}
+
+// return the cdot: C(x, y) = 2*(x-c) * v
+double CircularWireConstraint::getCdot(){
+	return 2 * ((m_p->m_Position[0] - m_center[0])*m_p->m_Velocity[0] + (m_p->m_Position[1] - m_center[1])*m_p->m_Velocity[1]);
+}
+
+//return J, if there are more use same order as particle
+vector<Vec2f> CircularWireConstraint::getJ(){
+	vector<Vec2f> result;
+	result.push_back({ 2 * (m_p->m_Position[0] - m_center[0]), 2 * (m_p->m_Position[1] - m_center[1]) });
+	return result;
+}
+
+//return Jdot, if there are more use same order as particle
+vector<Vec2f> CircularWireConstraint::getJdot(){
+	vector<Vec2f> result;
+	result.push_back({ 2 * m_p->m_Velocity[0], 2 * m_p->m_Velocity[1] });
+	return result;
+}
+vector<Particle> CircularWireConstraint::getParticles(){
+	vector<Particle> result;
+	result.push_back(*m_p);
+	return result;
 }
