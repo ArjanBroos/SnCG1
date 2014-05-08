@@ -17,4 +17,5 @@ public:
 	Vec2f m_Velocity;
 	float m_Mass;
 	Vec2f m_ForceAcc;	// Force Accumulator
+	int m_Number;      // asigned by particle system
 };

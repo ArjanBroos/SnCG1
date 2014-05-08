@@ -1,10 +1,11 @@
-#ifndef LINEAR_SOLVER_H
-#define LINEAR_SOLVER_H
+#pragma once
 
 #include <math.h> 
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <vector>
+using namespace std;
 
 // Karen's CGD
 
@@ -13,8 +14,22 @@
 // Matrix class the solver will accept
 class implicitMatrix
 {
- public:
-  virtual void matVecMult(double x[], double r[]) = 0;
+public: 
+	implicitMatrix(vector< vector<float> > x) {
+		matrix = x;
+	}
+
+	virtual void matVecMult(double x[], double r[]) {
+		for (int i = 0; i<matrix.size(); i++) {
+			r[i] = 0;
+			for (int j = 0; j < matrix[0].size(); j++){
+				r[i] += matrix[i][j] * x[j];
+			}
+		}
+	}
+
+private:
+	vector< vector<float> > matrix;
 };
 
 // Matrix class the solver will accept
@@ -45,5 +60,10 @@ void vecAssign(int n, double v1[], double v2[]);
 void vecTimesScalar(int n, double v[], double s);
 double vecDot(int n, double v1[], double v2[]);
 double vecSqrLen(int n, double v[]);
+// Some matrix helper functions
+vector<vector<float>> mul(vector< vector<float> > A, vector< vector<float> > B);
+vector<float> vecmul(vector< vector<float> > A,  vector<float>  B);
+vector<float> diffEqual(vector<float> r, vector<float> v);
+vector<float> timesScalar(vector<float> r, float s);
 
-#endif
+
