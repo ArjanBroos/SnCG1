@@ -62,7 +62,7 @@ static void init_system(void)
 	for (auto p = particles.begin(); p != particles.end(); p++)
 		particleSystem.AddForce(new GravityForce(*p));
 	particleSystem.AddForce(new SpringForce(particles[0], particles[1], dist, 1.0, 1.0));
-	//particleSystem.AddConstraint(new RodConstraint(particles[1], particles[2], dist));
+	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
 }
 

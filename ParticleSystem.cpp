@@ -66,7 +66,7 @@ void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 void ParticleSystem::ComputeApplyConstForce(){
 	int n = 2;
 	float ks = 0.31;
-	float kd = 0.31;
+	float kd = 0.62;
 	//Make J
 	vector<vector<float>> J(constraints.size(), vector<float>(particles.size() * n));
 	for (int i = 0; i < constraints.size(); i++) {
@@ -84,6 +84,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 			}
 		}
 	}
+	
 
 	//Make W
 	vector<vector<float>> W((particles.size() * n), vector<float>(particles.size() * n));
@@ -95,7 +96,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	for (int i = 0; i < particles.size(); i++) {
 		for (int o = 0; o < n; o++) {
-			W[n*i + o][n*i + o] = 1 / particles[i]->m_Mass;
+			W[n*i + o][n*i + o] = 1/particles[i]->m_Mass;
 		}
 	}
 
@@ -137,7 +138,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	vector<float> Q(particles.size()*n);
 	for (int i = 0; i < particles.size(); i++) {
 		for (int o = 0; o < n; o++) {
-			Q[n*i + o] = particles[i]->m_Velocity[o];
+			Q[n*i + o] = particles[i]->m_ForceAcc[o];
 		}
 	}
 
@@ -152,7 +153,6 @@ void ParticleSystem::ComputeApplyConstForce(){
 	for (int i = 0; i<constraints.size(); i++) {
 		Cdot[i] = constraints[i]->getCdot();
 	}
-
 
 	//Make JWJt and also JW
 	vector<vector<float>> JWJt;
@@ -171,7 +171,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	//Solve
 	implicitMatrix *M = new implicitMatrix(JWJt);
 	//Should be lenth of constraints
-	const int TODO = 1;
+	const int TODO = 2;
 	double lambda[TODO], r[TODO];
 
 	for (int i = 0; i < rightHandSide.size(); i++){
@@ -179,7 +179,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	int d = 100;
-	ConjGrad(TODO, M, lambda, r, 0.0000001, &d);
+	ConjGrad(TODO, M, lambda, r, 0.0000000000001, &d);
 	delete M;
 
 	//Make Qhat
@@ -189,7 +189,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	 vector<float> Qhat = vecmul(Jt, fhat);
-
+	
 	 //Assign forces
 	 for (unsigned int i = 0; i < particles.size(); i++) {
 		 for (int o = 0; o < n; o++) {

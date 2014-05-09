@@ -8,7 +8,11 @@ class RodConstraint : public Constraint {
   RodConstraint(Particle *p1, Particle * p2, double dist);
 
   void Draw() const;
-  void Apply();
+  double getC();
+  double getCdot();
+  std::vector<Vec2f> getJ();
+  std::vector<Vec2f> getJdot();
+  std::vector<Particle> getParticles();
 
  private:
 

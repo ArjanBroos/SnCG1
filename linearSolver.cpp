@@ -171,16 +171,18 @@ vector< vector<float> > mul(vector< vector<float> > A, vector< vector<float> > B
  vector<float> diffEqual(vector<float> r, vector<float> v)
  {
 	 vector<float> result(r.size());
-	 for (int i = 0; i < r.size(); i++)
+	 for (int i = 0; i < r.size(); i++){
 		 result[i] = r[i] - v[i];
+	 }
 	 return result;
  }
 
  vector<float> timesScalar(vector<float> r, float s)
  {
 	 vector<float> result(r.size());
-	 for (int i = 0; i < r.size(); i++)
-		 result[i] = r[i]* s;
+	 for (int i = 0; i < r.size(); i++){
+		 result[i] = r[i] * s;
+	 }
 	 return result;
  }
 

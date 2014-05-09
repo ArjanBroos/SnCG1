@@ -66,4 +66,3 @@ vector<float> vecmul(vector< vector<float> > A,  vector<float>  B);
 vector<float> diffEqual(vector<float> r, vector<float> v);
 vector<float> timesScalar(vector<float> r, float s);
 
-
