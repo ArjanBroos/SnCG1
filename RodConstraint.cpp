@@ -14,12 +14,12 @@ void RodConstraint::Draw() const
   glEnd();
 }
 
-// return the c: C(x1, y1, x2, y2) = (x1 - x1)^2 + (y1 - y2)^2 - r^2
+// return the c: C(x1, y1, x2, y2) = (x1 - x2)^2 + (y1 - y2)^2 - r^2
 double RodConstraint::getC(){
 	return (m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p1->m_Position[0] - m_p2->m_Position[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p1->m_Position[1] - m_p2->m_Position[1]) - m_dist*m_dist;
 }
 
-// return the cdot: C(x, y) = 
+// return the cdot: Cdot(x, y) = 
 double RodConstraint::getCdot(){
 	return 2 * (((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p1->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p1->m_Velocity[1])) - ((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p2->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p2->m_Velocity[1])));
 }

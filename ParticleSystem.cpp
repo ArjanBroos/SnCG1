@@ -170,16 +170,15 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Solve
 	implicitMatrix *M = new implicitMatrix(JWJt);
-	//Should be lenth of constraints
-	const int TODO = 2;
-	double lambda[TODO], r[TODO];
+	double* lambda = new double[constraints.size()];
+	double* r = new double[constraints.size()];
 
 	for (int i = 0; i < rightHandSide.size(); i++){
 		r[i] = rightHandSide[i];
 	}
 
 	int d = 100;
-	ConjGrad(TODO, M, lambda, r, 0.0000000000001, &d);
+	ConjGrad(constraints.size(), M, lambda, r, 0.0000000000001, &d);
 	delete M;
 
 	//Make Qhat
