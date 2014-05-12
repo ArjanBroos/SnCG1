@@ -27,16 +27,16 @@ double RodConstraint::getCdot(){
 //return J, if there are more use same order as particle
 vector<Vec2f> RodConstraint::getJ(){
 	vector<Vec2f> result;
-	result.push_back({ 2 * (m_p1->m_Position[0] - m_p2->m_Position[0]), 2 * (m_p1->m_Position[1] - m_p2->m_Position[1]) });
-	result.push_back({ 2 * (m_p2->m_Position[0] - m_p1->m_Position[0]), 2 * (m_p2->m_Position[1] - m_p1->m_Position[1]) });
+	result.push_back(Vec2f( 2 * (m_p1->m_Position[0] - m_p2->m_Position[0]), 2 * (m_p1->m_Position[1] - m_p2->m_Position[1]) ));
+	result.push_back(Vec2f( 2 * (m_p2->m_Position[0] - m_p1->m_Position[0]), 2 * (m_p2->m_Position[1] - m_p1->m_Position[1]) ));
 	return result;
 }
 
 //return Jdot, if there are more use same order as particle
 vector<Vec2f> RodConstraint::getJdot(){
 	vector<Vec2f> result;
-	result.push_back({ 2 * (m_p1->m_Velocity[0] - m_p2->m_Velocity[0]), 2 * (m_p1->m_Velocity[1] - m_p2->m_Velocity[1]) });
-	result.push_back({ 2 * (m_p2->m_Velocity[0] - m_p1->m_Velocity[0]), 2 * (m_p2->m_Velocity[1] - m_p1->m_Velocity[1]) });
+	result.push_back(Vec2f( 2 * (m_p1->m_Velocity[0] - m_p2->m_Velocity[0]), 2 * (m_p1->m_Velocity[1] - m_p2->m_Velocity[1]) ));
+	result.push_back(Vec2f( 2 * (m_p2->m_Velocity[0] - m_p1->m_Velocity[0]), 2 * (m_p2->m_Velocity[1] - m_p1->m_Velocity[1]) ));
 	return result;
 }
 vector<Particle> RodConstraint::getParticles(){

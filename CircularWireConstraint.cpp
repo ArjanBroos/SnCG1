@@ -37,14 +37,14 @@ double CircularWireConstraint::getCdot(){
 //return J, if there are more use same order as particle
 vector<Vec2f> CircularWireConstraint::getJ(){
 	vector<Vec2f> result;
-	result.push_back({ 2 * (m_p->m_Position[0] - m_center[0]), 2 * (m_p->m_Position[1] - m_center[1]) });
+	result.push_back(Vec2f( 2 * (m_p->m_Position[0] - m_center[0]), 2 * (m_p->m_Position[1] - m_center[1])));
 	return result;
 }
 
 //return Jdot, if there are more use same order as particle
 vector<Vec2f> CircularWireConstraint::getJdot(){
 	vector<Vec2f> result;
-	result.push_back({ 2 * m_p->m_Velocity[0], 2 * m_p->m_Velocity[1] });
+	result.push_back(Vec2f( 2 * m_p->m_Velocity[0], 2 * m_p->m_Velocity[1] ));
 	return result;
 }
 vector<Particle> CircularWireConstraint::getParticles(){
