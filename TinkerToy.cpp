@@ -7,6 +7,7 @@
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
 #include "AngularConstraint.h"
+#include "ViscousDragForce.h"
 #include "imageio.h"
 
 #include <vector>
@@ -57,12 +58,17 @@ static void init_system(void)
 	particleSystem.AddParticle(new Particle(center + offset + offset));
 	particleSystem.AddParticle(new Particle(center + offset + offset + offset));
 	particleSystem.AddParticle(new Particle(center + aoffset));
-	// You shoud replace these with a vector generalized forces and one of
-	// constraints...
+
 	// Add gravity to all particles
 	auto& particles = particleSystem.GetParticles();
 	for (auto p = particles.begin(); p != particles.end(); p++)
 		particleSystem.AddForce(new GravityForce(*p));
+
+	// Add viscous drag to all particles
+	const float drag = 0.2f; // Viscous drag (friction)
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new ViscousDragForce(*p, drag));
+
 	particleSystem.AddForce(new SpringForce(particles[0], particles[1], dist, 1.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
