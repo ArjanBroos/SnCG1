@@ -45,6 +45,9 @@
     <ClCompile Include="GravityForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AngularConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircularWireConstraint.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GravityForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AngularConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

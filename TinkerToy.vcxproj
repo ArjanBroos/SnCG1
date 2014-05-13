@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AngularConstraint.cpp" />
     <ClCompile Include="CircularWireConstraint.cpp" />
     <ClCompile Include="GravityForce.cpp" />
     <ClCompile Include="imageio.cpp" />
@@ -90,6 +91,7 @@
     <ClCompile Include="TinkerToy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AngularConstraint.h" />
     <ClInclude Include="CircularWireConstraint.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="Force.h" />
