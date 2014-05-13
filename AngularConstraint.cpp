@@ -12,8 +12,8 @@ void AngularConstraint::Draw() const
 	Vec2f b = m_p2->m_Position - m_joint->m_Position;
 	a = (a / sqrt(a*a));
 	b = (b / sqrt(b*b));
-	a = { m_joint->m_Position[0] + a[0] * radius , m_joint->m_Position[1] + a[1] * radius };
-	b = { m_joint->m_Position[0] + b[0] * radius, m_joint->m_Position[1] + b[1] * radius };
+	a = Vec2f( m_joint->m_Position[0] + a[0] * radius , m_joint->m_Position[1] + a[1] * radius );
+	b = Vec2f( m_joint->m_Position[0] + b[0] * radius, m_joint->m_Position[1] + b[1] * radius );
 	
   glBegin( GL_LINES );
   glColor3f(0.8, 0.7, 0.6);
@@ -48,7 +48,7 @@ double AngularConstraint::getCdot(){
 	b[0] = a[0] + m_p2->m_Velocity[0] - m_joint->m_Velocity[0];
 	b[1] = a[1] + m_p2->m_Velocity[1] - m_joint->m_Velocity[1];
 	double db = vecDot(2, a, b);
-	printf("%f \t %f \n",da,db);
+	//printf("%f \t %f \n",da,db);
 	return 0;
 }
 

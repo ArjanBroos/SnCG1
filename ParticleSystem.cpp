@@ -65,20 +65,20 @@ void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 
 void ParticleSystem::ComputeApplyConstForce(){
 	int n = 2;
-	float ks = 0.31;
-	float kd = 0.62;
+	float ks = 0.31f;
+	float kd = 0.62f;
 	//Make J
 	vector<vector<float>> J(constraints.size(), vector<float>(particles.size() * n));
-	for (int i = 0; i < constraints.size(); i++) {
-		for (int j = 0; j < particles.size() * n; j++) {
+	for (unsigned i = 0; i < constraints.size(); i++) {
+		for (unsigned j = 0; j < particles.size() * n; j++) {
 			J[i][j] = 0;
 		}
 	}
 
-	for (int i = 0; i < constraints.size(); i++) {
+	for (unsigned i = 0; i < constraints.size(); i++) {
 		vector<Vec2f> cons = constraints[i]->getJ();
 		vector<Particle> part = constraints[i]->getParticles();
-		for (int j = 0; j < part.size(); j++) {
+		for (unsigned j = 0; j < part.size(); j++) {
 			for (int o = 0; o < n; o++) {
 				J[i][part[j].m_Number*n + o] = cons[j][o];
 			}
@@ -88,13 +88,13 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make W
 	vector<vector<float>> W((particles.size() * n), vector<float>(particles.size() * n));
-	for (int i = 0; i < particles.size() *n; i++) {
-		for (int j = 0; j < particles.size()*n; j++) {
+	for (unsigned i = 0; i < particles.size() *n; i++) {
+		for (unsigned j = 0; j < particles.size()*n; j++) {
 			W[i][j] = 0;
 		}
 	}
 
-	for (int i = 0; i < particles.size(); i++) {
+	for (unsigned i = 0; i < particles.size(); i++) {
 		for (int o = 0; o < n; o++) {
 			W[n*i + o][n*i + o] = 1/particles[i]->m_Mass;
 		}
@@ -102,24 +102,24 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make Jt
 	vector< vector<float> > Jt((particles.size() * n), vector<float>(constraints.size()));
-	for (int i = 0; i<constraints.size(); i++) {
-		for (int j = 0; j < particles.size() * n; j++){
+	for (unsigned i = 0; i<constraints.size(); i++) {
+		for (unsigned j = 0; j < particles.size() * n; j++){
 			Jt[j][i] = J[i][j];
 		}
 	}
 
 	//Make Jdot
 	vector<vector<float>> Jdot(constraints.size(), vector<float>(particles.size() * n));
-	for (int i = 0; i < constraints.size(); i++) {
-		for (int j = 0; j < particles.size() * n; j++) {
+	for (unsigned i = 0; i < constraints.size(); i++) {
+		for (unsigned j = 0; j < particles.size() * n; j++) {
 			Jdot[i][j] = 0;
 		}
 	}
 
-	for (int i = 0; i < constraints.size(); i++) {
+	for (unsigned i = 0; i < constraints.size(); i++) {
 		vector<Vec2f> cons = constraints[i]->getJdot();
 		vector<Particle> part = constraints[i]->getParticles();
-		for (int j = 0; j < part.size(); j++) {
+		for (unsigned j = 0; j < part.size(); j++) {
 			for (int o = 0; o < n; o++) {
 				Jdot[i][part[j].m_Number*n + o] = cons[j][o];
 			}
@@ -128,7 +128,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make qdot
 	vector<float> qdot(particles.size()*n);
-	for (int i = 0; i < particles.size(); i++) {
+	for (unsigned i = 0; i < particles.size(); i++) {
 		for (int o = 0; o < n; o++) {
 			qdot[n*i + o] = particles[i]->m_Velocity[o];
 		}
@@ -136,7 +136,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make Q
 	vector<float> Q(particles.size()*n);
-	for (int i = 0; i < particles.size(); i++) {
+	for (unsigned i = 0; i < particles.size(); i++) {
 		for (int o = 0; o < n; o++) {
 			Q[n*i + o] = particles[i]->m_ForceAcc[o];
 		}
@@ -144,14 +144,14 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make C
 	vector<float> C(particles.size());
-	for (int i = 0; i<constraints.size(); i++) {
-		C[i] = constraints[i]->getC();
+	for (unsigned i = 0; i<constraints.size(); i++) {
+		C[i] = (float)constraints[i]->getC();
 	}
 
 	//Make Cdot
 	vector<float> Cdot(particles.size());
-	for (int i = 0; i<constraints.size(); i++) {
-		Cdot[i] = constraints[i]->getCdot();
+	for (unsigned i = 0; i<constraints.size(); i++) {
+		Cdot[i] = (float)constraints[i]->getCdot();
 	}
 
 	//Make JWJt and also JW
@@ -173,7 +173,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	double* lambda = new double[constraints.size()];
 	double* r = new double[constraints.size()];
 
-	for (int i = 0; i < rightHandSide.size(); i++){
+	for (unsigned i = 0; i < rightHandSide.size(); i++){
 		r[i] = rightHandSide[i];
 	}
 
@@ -183,8 +183,8 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 	//Make Qhat
 	vector<float> fhat((constraints.size()));
-	for (int i = 0; i < constraints.size(); i++){
-		fhat[i] = lambda[i];
+	for (unsigned i = 0; i < constraints.size(); i++){
+		fhat[i] = (float)lambda[i];
 	}
 
 	 vector<float> Qhat = vecmul(Jt, fhat);
