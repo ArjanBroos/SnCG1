@@ -7,6 +7,7 @@
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
 #include "AngularConstraint.h"
+#include "ViscousDragForce.h"
 #include "imageio.h"
 
 #include <vector>
@@ -18,6 +19,7 @@
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
 extern void MidPointStep(ParticleSystem& particleSystem, float dt);
+extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
 /* global variables */
 
@@ -57,16 +59,21 @@ static void init_system(void)
 	particleSystem.AddParticle(new Particle(center + offset + offset));
 	particleSystem.AddParticle(new Particle(center + offset + offset + offset));
 	particleSystem.AddParticle(new Particle(center + aoffset));
-	// You shoud replace these with a vector generalized forces and one of
-	// constraints...
+
 	// Add gravity to all particles
 	auto& particles = particleSystem.GetParticles();
 	for (auto p = particles.begin(); p != particles.end(); p++)
 		particleSystem.AddForce(new GravityForce(*p));
-	particleSystem.AddForce(new SpringForce(particles[0], particles[1], dist, 1.0, 1.0));
+
+	// Add viscous drag to all particles
+	const float drag = 0.2f; // Viscous drag (friction)
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new ViscousDragForce(*p, drag));
+
+	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*3.1415926535897932384626433832795));
+	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
 }
 
 /*
@@ -239,7 +246,7 @@ static void reshape_func ( int width, int height )
 static void idle_func ( void )
 {
 	if (dsim) {
-		ExplicitEulerStep(particleSystem, dt);
+		MidPointStep(particleSystem, dt);
 	} else {
 		get_from_UI();
 		remap_GUI();
@@ -305,7 +312,7 @@ int main ( int argc, char ** argv )
 
 	if ( argc == 1 ) {
 		N = 64;
-		dt = 0.01f;
+		dt = 0.0001f;
 		d = 5.f;
 		fprintf ( stderr, "Using defaults : N=%d dt=%g d=%g\n",
 			N, dt, d );

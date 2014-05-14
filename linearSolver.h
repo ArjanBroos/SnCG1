@@ -20,9 +20,9 @@ public:
 	}
 
 	virtual void matVecMult(double x[], double r[]) {
-		for (int i = 0; i<matrix.size(); i++) {
+		for (unsigned i = 0; i<matrix.size(); i++) {
 			r[i] = 0;
-			for (int j = 0; j < matrix[0].size(); j++){
+			for (unsigned j = 0; j < matrix[0].size(); j++){
 				r[i] += matrix[i][j] * x[j];
 			}
 		}
