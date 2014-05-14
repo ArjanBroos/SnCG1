@@ -9,7 +9,6 @@ void RodConstraint::Draw() const
   glBegin( GL_LINES );
   glColor3f(0.8, 0.7, 0.6);
   glVertex2f( m_p1->m_Position[0], m_p1->m_Position[1] );
-  glColor3f(0.8, 0.7, 0.6);
   glVertex2f( m_p2->m_Position[0], m_p2->m_Position[1] );
   glEnd();
 }
@@ -19,9 +18,9 @@ double RodConstraint::getC(){
 	return (m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p1->m_Position[0] - m_p2->m_Position[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p1->m_Position[1] - m_p2->m_Position[1]) - m_dist*m_dist;
 }
 
-// return the cdot: Cdot(x, y) = 
+// return the cdot: Cdot(x, y , vx, vy) = (x-y)*vx - ((x-y)*vy)
 double RodConstraint::getCdot(){
-	return 2 * (((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p1->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p1->m_Velocity[1])) - ((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p2->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p2->m_Velocity[1])));
+	return ((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p1->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p1->m_Velocity[1])) - ((m_p1->m_Position[0] - m_p2->m_Position[0])*(m_p2->m_Velocity[0]) + (m_p1->m_Position[1] - m_p2->m_Position[1])*(m_p2->m_Velocity[1]));
 }
 
 //return J, if there are more use same order as particle

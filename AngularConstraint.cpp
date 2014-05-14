@@ -33,22 +33,31 @@ double AngularConstraint::getC(){
 	return 0;// vecDot(2, a, b) - sqrt(a[0] * a[0] + a[1] * a[1])*sqrt(b[0] * b[0] + b[1] * b[1])* cos(m_angle);
 }
 
-// return the cdot: Cdot(x, y) = |v|sin/|r| met sin=sqrt(1-cos^2) en cos = dot /(|v||r|)
+// return the cdot: Cdot(x, y) = |v_r|sin/|r| met sin=sqrt(1-cos^2) en cos = dot /(|v_r||r|) , r/in{a,b}
 double AngularConstraint::getCdot(){
-	double* a = new double[2];
-	a[0] = m_joint->m_Position[0] - m_p1->m_Position[0];
-	a[1] = m_joint->m_Position[1] - m_p1->m_Position[1];
-	double* b = new double[2];
-	b[0] = a[0] + m_p1->m_Velocity[0] - m_joint->m_Velocity[0];
-	b[1] = a[1] + m_p1->m_Velocity[1] - m_joint->m_Velocity[1];
-	double da = vecDot(2, a, b);
+	double* r = new double[2];
+	r[0] = m_joint->m_Position[0] - m_p1->m_Position[0];
+	r[1] = m_joint->m_Position[1] - m_p1->m_Position[1];
+	double* v = new double[2];
+	v[0] = m_p1->m_Velocity[0] - m_joint->m_Velocity[0];
+	v[1] = m_p1->m_Velocity[1] - m_joint->m_Velocity[1];
+	double angspeed1 = 0;
+	if (sqrt(v[0] * v[0] + v[1] * v[1])!=0){
+		double cos = vecDot(2, r, v) / (sqrt(v[0] * v[0] + v[1] * v[1])*sqrt(r[0] * r[0] + r[1] * r[1]));
+		angspeed1 = (sqrt(v[0] * v[0] + v[1] * v[1])*sin(sqrt(1 - cos*cos)) )/ sqrt(r[0] * r[0] + r[1] * r[1]);
+	}
 
-	a[0] = m_joint->m_Position[0] - m_p2->m_Position[0];
-	a[1] = m_joint->m_Position[1] - m_p2->m_Position[1];
-	b[0] = a[0] + m_p2->m_Velocity[0] - m_joint->m_Velocity[0];
-	b[1] = a[1] + m_p2->m_Velocity[1] - m_joint->m_Velocity[1];
-	double db = vecDot(2, a, b);
-	printf("%f \t %f \n",da,db);
+	r[0] = m_joint->m_Position[0] - m_p2->m_Position[0];
+	r[1] = m_joint->m_Position[1] - m_p2->m_Position[1];
+	v[0] = m_p2->m_Velocity[0] - m_joint->m_Velocity[0];
+	v[1] = m_p2->m_Velocity[1] - m_joint->m_Velocity[1];
+	double angspeed2 = 0;
+	if (sqrt(v[0] * v[0] + v[1] * v[1]) != 0){
+		double cos = vecDot(2, r, v) / (sqrt(v[0] * v[0] + v[1] * v[1])*sqrt(r[0] * r[0] + r[1] * r[1]));
+		angspeed2 = (sqrt(v[0] * v[0] + v[1] * v[1])*sin(sqrt(1 - cos*cos)) )/ sqrt(r[0] * r[0] + r[1] * r[1]);
+	}
+
+	printf("%f  \n", angspeed1 - angspeed2);
 	return 0;
 }
 

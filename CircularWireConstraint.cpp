@@ -29,9 +29,9 @@ double CircularWireConstraint::getC(){
 	return (m_p->m_Position[0] - m_center[0])*(m_p->m_Position[0] - m_center[0]) + (m_p->m_Position[1] - m_center[1])*(m_p->m_Position[1] - m_center[1]) - m_radius*m_radius;
 }
 
-// return the cdot: C(x, y) = 2*(x-c) * v
+// return the cdot: C(x, y) = (x-c) * v
 double CircularWireConstraint::getCdot(){
-	return 2 * ((m_p->m_Position[0] - m_center[0])*m_p->m_Velocity[0] + (m_p->m_Position[1] - m_center[1])*m_p->m_Velocity[1]);
+	return (m_p->m_Position[0] - m_center[0])*m_p->m_Velocity[0] + (m_p->m_Position[1] - m_center[1])*m_p->m_Velocity[1];
 }
 
 //return J, if there are more use same order as particle
