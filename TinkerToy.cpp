@@ -70,10 +70,10 @@ static void init_system(void)
 	for (auto p = particles.begin(); p != particles.end(); p++)
 		particleSystem.AddForce(new ViscousDragForce(*p, drag));
 
-	particleSystem.AddForce(new SpringForce(particles[0], particles[1], dist, 1.0, 1.0));
+	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*3.1415926535897932384626433832795));
+	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
 }
 
 /*
@@ -246,7 +246,7 @@ static void reshape_func ( int width, int height )
 static void idle_func ( void )
 {
 	if (dsim) {
-		RungeKutta4Step(particleSystem, dt);
+		MidPointStep(particleSystem, dt);
 	} else {
 		get_from_UI();
 		remap_GUI();
