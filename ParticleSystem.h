@@ -44,4 +44,18 @@ private:
 	std::vector<Particle*>			particles;
 	std::vector<Force*>				forces;
 	std::vector<Constraint*>		constraints;
+
+	vector<vector<float>>			J;
+	vector<vector<float>>			W;
+	vector<vector<float>>			Jt;
+	vector<vector<float>>			Jdot;
+	vector<float>					qdot;
+	vector<float>					Q;
+	vector<float>					C;
+	vector<float>					Cdot;
+	vector<vector<float>>			JWJt;
+	vector<vector<float>>			JW;
+	vector<float>					rightHandSide;
+	vector<float>					fhat;
+	vector<float>					Qhat;
 };

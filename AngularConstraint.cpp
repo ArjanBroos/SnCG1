@@ -57,7 +57,7 @@ double AngularConstraint::getCdot(){
 		angspeed2 = (sqrt(v[0] * v[0] + v[1] * v[1])*sin(sqrt(1 - cos*cos)) )/ sqrt(r[0] * r[0] + r[1] * r[1]);
 	}
 
-	printf("%f  \n", angspeed1 - angspeed2);
+	//printf("%f  \n", angspeed1 - angspeed2);
 	return 0;
 }
 

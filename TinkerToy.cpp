@@ -66,14 +66,14 @@ static void init_system(void)
 		particleSystem.AddForce(new GravityForce(*p));
 
 	// Add viscous drag to all particles
-	const float drag = 0.2f; // Viscous drag (friction)
+	const float drag = 0.1f; // Viscous drag (friction)
 	for (auto p = particles.begin(); p != particles.end(); p++)
 		particleSystem.AddForce(new ViscousDragForce(*p, drag));
 
 	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
+	//particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
 }
 
 /*
