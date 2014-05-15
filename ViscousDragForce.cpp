@@ -14,7 +14,7 @@ void ViscousDragForce::Draw() const {
 	glBegin(GL_LINES);
 		glColor3f(0.4f, 0.2f, 0.2f);
 		glVertex2f(particle->m_Position[0], particle->m_Position[1]);
-		glVertex2f(particle->m_Position[0] - 0.05f * particle->m_Velocity[0],
-			particle->m_Position[1] - 0.05f * particle->m_Velocity[1]);
+		glVertex2f(particle->m_Position[0] - drag * 0.2f * particle->m_Velocity[0],
+			particle->m_Position[1] - drag * 0.2f * particle->m_Velocity[1]);
 	glEnd();
 }
