@@ -95,6 +95,7 @@
     <ClInclude Include="AngularConstraint.h" />
     <ClInclude Include="CircularWireConstraint.h" />
     <ClInclude Include="Constraint.h" />
+    <ClInclude Include="util.h" />
     <ClInclude Include="ViscousDragForce.h" />
     <ClInclude Include="Force.h" />
     <ClInclude Include="GravityForce.h" />
