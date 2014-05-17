@@ -123,6 +123,11 @@ void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 }
 
 void ParticleSystem::ComputeApplyConstForce(){
+
+	if (constraints.size()==0 || particles.size()==0){
+		return;
+	}
+
 	int n = 2;
 	float ks = 0.31f;
 	float kd = 0.62f;
