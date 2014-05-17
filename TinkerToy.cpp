@@ -36,6 +36,7 @@ static int mouse_release[3];
 static int mouse_shiftclick[3];
 static int omx, omy, mx, my;
 static int hmx, hmy;
+bool mouse0IsPressed = false;
 
 ParticleSystem particleSystem;
 
@@ -145,29 +146,36 @@ relates mouse movements to tinker toy construction
 */
 static void get_from_UI ()
 {
-	int i, j;
-	// int size, flag;
-	int hi, hj;
-	// float x, y;
-	if ( !mouse_down[0] && !mouse_down[2] && !mouse_release[0] 
-	&& !mouse_shiftclick[0] && !mouse_shiftclick[2] ) return;
+	if (!mouse_down[0] && !mouse_down[2] && !mouse_release[0] 
+		&& !mouse_shiftclick[0] && !mouse_shiftclick[2]) return;
 
-	i = (int)((       mx /(float)win_x)*N);
-	j = (int)(((win_y-my)/(float)win_y)*N);
+	// Map mouse position to [-1, 1]
+	float x = ((float)mx / (float)win_x) * 2.f - 1.f;
+	float y = ((float)my / (float)win_y) * 2.f - 1.f;
+	y = -y;
 
-	if ( i<1 || i>N || j<1 || j>N ) return;
+	if (x < -1.f || x > 1.f || y < -1.f || y > 1.f) return;
 
-	if ( mouse_down[0] ) {
-
+	if (mouse_down[0]) {
+		Particle mp(Vec2f(x, y));
+		Particle* cp = nullptr;
+		if (!mouse0IsPressed) {
+			mouse0IsPressed = true;
+			cp = particleSystem.GetClosestParticle(Vec2f(x, y));
+		}
+		if (cp) {
+			//SpringForce sf(&mp, cp, 0.1, 1.0, 1.0);
+			//sf.Apply();
+			//sf.Draw();
+			cp->m_ForceAcc += Vec2f(10.f, 10.f);
+		}
 	}
 
 	if ( mouse_down[2] ) {
 	}
 
-	hi = (int)((       hmx /(float)win_x)*N);
-	hj = (int)(((win_y-hmy)/(float)win_y)*N);
-
 	if( mouse_release[0] ) {
+		mouse0IsPressed = false;
 	}
 
 	omx = mx;
@@ -245,12 +253,10 @@ static void reshape_func ( int width, int height )
 
 static void idle_func ( void )
 {
-	if (dsim) {
+	if (dsim)
 		MidPointStep(particleSystem, dt);
-	} else {
-		get_from_UI();
-		remap_GUI();
-	}
+	get_from_UI();
+	remap_GUI();
 
 	glutSetWindow(win_id);
 	glutPostRedisplay();

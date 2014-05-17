@@ -28,6 +28,8 @@ public:
 	const std::vector<Force*>&		GetForces() const;
 	// Get the constraints on this system
 	const std::vector<Constraint*>&	GetConstraints() const;
+	// Get the particle closest to position
+	Particle*						GetClosestParticle(Vec2f position);
 
 	// Derivative evaluation
 	void							DerivEval(std::vector<Vec2f>& derivatives);

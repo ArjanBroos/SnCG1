@@ -43,12 +43,22 @@ const std::vector<Constraint*>& ParticleSystem::GetConstraints() const {
 	return constraints;
 }
 
+// Return the particle closest to (x, y)
+Particle* ParticleSystem::GetClosestParticle(Vec2f position) {
+	Particle* closest = nullptr;
+	float mind = 1e30f;	// Minimum squared distance so far
+	for (auto p = particles.begin(); p != particles.end(); p++) {
+		float ds = norm2(position - (*p)->m_Position); // Distance squared
+		if (ds < mind) {
+			closest = *p;
+			mind = ds;
+		}
+	}
+	return closest;
+}
+
 // Derivative evaluation
 void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
-	// Clear force accumulators
-	for (auto p = particles.begin(); p != particles.end(); p++)
-		(*p)->m_ForceAcc = Vec2f(0.f, 0.f);
-
 	// Apply all forces
 	for (auto f = forces.begin(); f != forces.end(); f++)
 		(*f)->Apply();
@@ -61,6 +71,10 @@ void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 		derivatives.push_back(p->m_Velocity);				// x' = v
 		derivatives.push_back(p->m_ForceAcc / p->m_Mass);	// v' = f / m
 	}
+
+	// Clear force accumulators
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		(*p)->m_ForceAcc = Vec2f(0.f, 0.f);
 }
 
 void ParticleSystem::ComputeApplyConstForce(){
