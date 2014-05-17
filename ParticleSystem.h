@@ -8,18 +8,28 @@
 // A system used for the simulation of particles
 class ParticleSystem {
 public:
+	// Sets empty state
+	ParticleSystem();
 	// Frees any allocated memory
 	~ParticleSystem();
 
 	// Adds a particle to the system
 	// This system will take ownership of the pointer and is therefore responsible for its destruction
-	void							AddParticle(Particle* particle);
+	// Returns the ID of the added particle
+	int								AddParticle(Particle* particle);
 	// Adds a force to the system
 	// This system will take ownership of the pointer and is therefore responsible for its destruction
-	void							AddForce(Force* force);
+	// Returns the ID of the added force
+	int								AddForce(Force* force);
 	// Adds a constraint to the system
 	// This system will take ownership of the pointer and is therefore responsible for its destruction
-	void							AddConstraint(Constraint* constraint);
+	// Returns the id of the added constraint
+	int								AddConstraint(Constraint* constraint);
+
+	// Functions for removing parts of the system
+	void							RemoveParticle(int particleID);
+	void							RemoveForce(int forceID);
+	void							RemoveConstraint(int constraintID);
 
 	// Get the particles in this system
 	// Non-const reference is returned, so it allows our particles to be modified through the returned vector
@@ -28,8 +38,8 @@ public:
 	const std::vector<Force*>&		GetForces() const;
 	// Get the constraints on this system
 	const std::vector<Constraint*>&	GetConstraints() const;
-	// Get the particle closest to position
-	Particle*						GetClosestParticle(Vec2f position);
+	// Get the particle closest to position, excluding particle with particleID
+	Particle*						GetClosestParticle(Vec2f position, int particleID);
 
 	// Derivative evaluation
 	void							DerivEval(std::vector<Vec2f>& derivatives);
@@ -43,10 +53,17 @@ public:
 	void							ComputeApplyConstForce();
 
 private:
+	// Components of the particle system
 	std::vector<Particle*>			particles;
 	std::vector<Force*>				forces;
 	std::vector<Constraint*>		constraints;
 
+	// Counters used for assigning unique ID's
+	int								particleIDCounter;
+	int								forceIDCounter;
+	int								constraintIDCounter;
+
+	// Not kept locally in functions, to prevent constant reallocation
 	vector<vector<float>>			J;
 	vector<vector<float>>			W;
 	vector<vector<float>>			Jt;

@@ -1,8 +1,16 @@
 ﻿#include "ParticleSystem.h"
 #include "gfx/vec2.h"
 #include "linearSolver.h"
+#include "util.h"
 
 using namespace std;
+
+// Sets empty state
+ParticleSystem::ParticleSystem() {
+	particleIDCounter = 0;
+	forceIDCounter = 0;
+	constraintIDCounter = 0;
+}
 
 // Frees any allocated memory
 ParticleSystem::~ParticleSystem() {
@@ -11,21 +19,57 @@ ParticleSystem::~ParticleSystem() {
 
 // Adds a particle to the system
 // This system will take ownership of the pointer and is therefore responsible for its destruction
-void ParticleSystem::AddParticle(Particle* particle) {
+int ParticleSystem::AddParticle(Particle* particle) {
 	particles.push_back(particle);
-	particle->m_Number = particles.size() - 1;
+	particle->m_ID = particleIDCounter++;
+	particle->m_Number = particles.size() -  1;
+	return particle->m_ID;
 }
 
 // Adds a force to the system
 // This system will take ownership of the pointer and is therefore responsible for its destruction
-void ParticleSystem::AddForce(Force* force) {
+int ParticleSystem::AddForce(Force* force) {
 	forces.push_back(force);
+	force->m_ID = forceIDCounter++;
+	return force->m_ID;
 }
 
 // Adds a constraint to the system
 // This system will take ownership of the pointer and is therefore responsible for its destruction
-void ParticleSystem::AddConstraint(Constraint* constraint) {
+int ParticleSystem::AddConstraint(Constraint* constraint) {
 	constraints.push_back(constraint);
+	constraint->m_ID = constraintIDCounter++;
+	return constraint->m_ID;
+}
+
+// Removes a particle from the system
+// ! Assumes particles are in ordering of ID !
+void ParticleSystem::RemoveParticle(int particleID) {
+	int index = BinarySearch<Particle*>(particles, particleID);
+	if (index != -1) {
+		delete particles[index];
+		particles.erase(particles.begin() + index);
+	}
+}
+
+// Removes a force from the system
+// ! Assumes forces are in ordering of ID !
+void ParticleSystem::RemoveForce(int forceID) {
+	int index = BinarySearch<Force*>(forces, forceID);
+	if (index != -1) {
+		delete forces[index];
+		forces.erase(forces.begin() + index);
+	}
+}
+
+// Removes a constraint from the system
+// ! Assumes constraints are in ordering of ID !
+void ParticleSystem::RemoveConstraint(int constraintID) {
+	int index = BinarySearch<Constraint*>(constraints, constraintID);
+	if (index != -1) {
+		delete constraints[index];
+		constraints.erase(constraints.begin() + index);
+	}
 }
 
 // Get the particles in this system
@@ -43,11 +87,12 @@ const std::vector<Constraint*>& ParticleSystem::GetConstraints() const {
 	return constraints;
 }
 
-// Return the particle closest to (x, y)
-Particle* ParticleSystem::GetClosestParticle(Vec2f position) {
+// Return the particle closest to (x, y), excluding particle with particleID
+Particle* ParticleSystem::GetClosestParticle(Vec2f position, int particleID) {
 	Particle* closest = nullptr;
 	float mind = 1e30f;	// Minimum squared distance so far
 	for (auto p = particles.begin(); p != particles.end(); p++) {
+		if ((*p)->m_ID == particleID) continue;
 		float ds = norm2(position - (*p)->m_Position); // Distance squared
 		if (ds < mind) {
 			closest = *p;
@@ -59,6 +104,10 @@ Particle* ParticleSystem::GetClosestParticle(Vec2f position) {
 
 // Derivative evaluation
 void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
+	// Clear force accumulators
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		(*p)->m_ForceAcc = Vec2f(0.f, 0.f);
+
 	// Apply all forces
 	for (auto f = forces.begin(); f != forces.end(); f++)
 		(*f)->Apply();
@@ -71,10 +120,6 @@ void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 		derivatives.push_back(p->m_Velocity);				// x' = v
 		derivatives.push_back(p->m_ForceAcc / p->m_Mass);	// v' = f / m
 	}
-
-	// Clear force accumulators
-	for (auto p = particles.begin(); p != particles.end(); p++)
-		(*p)->m_ForceAcc = Vec2f(0.f, 0.f);
 }
 
 void ParticleSystem::ComputeApplyConstForce(){
@@ -82,8 +127,9 @@ void ParticleSystem::ComputeApplyConstForce(){
 	float ks = 0.31f;
 	float kd = 0.62f;
 	//Make J
-	J.resize(constraints.size(), vector<float>(particles.size() * n));
+	J.resize(constraints.size());
 	for (unsigned i = 0; i < constraints.size(); i++) {
+		J[i].resize(particles.size() * n);
 		for (unsigned j = 0; j < particles.size() * n; j++) {
 			J[i][j] = 0;
 		}
@@ -101,8 +147,9 @@ void ParticleSystem::ComputeApplyConstForce(){
 	
 
 	//Make W
-	W.resize((particles.size() * n), vector<float>(particles.size() * n));
+	W.resize(particles.size() * n);
 	for (unsigned i = 0; i < particles.size() *n; i++) {
+		W[i].resize(particles.size() * n);
 		for (unsigned j = 0; j < particles.size()*n; j++) {
 			W[i][j] = 0;
 		}
@@ -115,24 +162,26 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	//Make Jt
-	Jt.resize((particles.size() * n), vector<float>(constraints.size()));
-	for (unsigned i = 0; i<constraints.size(); i++) {
-		for (unsigned j = 0; j < particles.size() * n; j++){
-			Jt[j][i] = J[i][j];
+	Jt.resize(particles.size() * n);
+	for (unsigned i = 0; i<particles.size() * n; i++) {
+		Jt[i].resize(constraints.size());
+		for (unsigned j = 0; j < constraints.size(); j++){
+			Jt[i][j] = J[j][i];
 		}
 	}
 
 	//Make Jdot
-	Jdot.resize(constraints.size(), vector<float>(particles.size() * n));
+	Jdot.resize(constraints.size());
 	for (unsigned i = 0; i < constraints.size(); i++) {
+		Jdot[i].resize(particles.size() * n);
 		for (unsigned j = 0; j < particles.size() * n; j++) {
 			Jdot[i][j] = 0;
 		}
 	}
 
 	for (unsigned i = 0; i < constraints.size(); i++) {
-		vector<Vec2f>& cons = constraints[i]->getJdot();
-		vector<Particle>& part = constraints[i]->getParticles();
+		vector<Vec2f> cons = constraints[i]->getJdot();
+		vector<Particle> part = constraints[i]->getParticles();
 		for (unsigned j = 0; j < part.size(); j++) {
 			for (int o = 0; o < n; o++) {
 				Jdot[i][part[j].m_Number*n + o] = cons[j][o];
@@ -157,13 +206,13 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	//Make C
-	C.resize(particles.size());
+	C.resize(constraints.size());
 	for (unsigned i = 0; i<constraints.size(); i++) {
 		C[i] = (float)constraints[i]->getC();
 	}
 
 	//Make Cdot
-	Cdot.resize(particles.size());
+	Cdot.resize(constraints.size());
 	for (unsigned i = 0; i<constraints.size(); i++) {
 		Cdot[i] = (float)constraints[i]->getCdot();
 	}
@@ -191,21 +240,23 @@ void ParticleSystem::ComputeApplyConstForce(){
 	int d = 100;
 	ConjGrad(constraints.size(), M, lambda, r, 0.0000000000001, &d);
 	delete M;
+	delete[] r;
 
 	//Make Qhat
-	fhat.resize((constraints.size()));
+	fhat.resize(constraints.size());
 	for (unsigned i = 0; i < constraints.size(); i++){
 		fhat[i] = (float)lambda[i];
 	}
+	delete[] lambda;
 
-	 Qhat = vecmul(Jt, fhat);
+	Qhat = vecmul(Jt, fhat);
 	
-	 //Assign forces
-	 for (unsigned int i = 0; i < particles.size(); i++) {
-		 for (int o = 0; o < n; o++) {
-			 particles[i]->m_ForceAcc[o] += Qhat[2 * i + o];
-		 }
-	 }
+	//Assign forces
+	for (unsigned int i = 0; i < particles.size(); i++) {
+		for (int o = 0; o < n; o++) {
+			particles[i]->m_ForceAcc[o] += Qhat[2 * i + o];
+		}
+	}
 }
 
 // Resets the system back to its initial state

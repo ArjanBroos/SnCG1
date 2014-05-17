@@ -15,4 +15,6 @@ public:
 	virtual vector<Vec2f> getJ() = 0;
 	virtual vector<Vec2f> getJdot() = 0;
 	virtual vector<Particle> getParticles() = 0;
+
+	int m_ID;	// Unique ID, to be assigned by ParticleSystem
 };

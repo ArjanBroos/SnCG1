@@ -9,4 +9,6 @@ public:
 	virtual void Apply() = 0;
 	// Draws the force between the associated particles
 	virtual void Draw() const = 0;
+
+	int m_ID;	// Unique ID, to be assigned by ParticleSystem
 };

@@ -39,6 +39,9 @@ static int hmx, hmy;
 bool mouse0IsPressed = false;
 
 ParticleSystem particleSystem;
+Particle* mouseParticle = nullptr;
+int mouseParticleID = -1;
+int mouseSpringID = -1;
 
 static void clear_data ( void )
 {
@@ -154,28 +157,49 @@ static void get_from_UI ()
 	float y = ((float)my / (float)win_y) * 2.f - 1.f;
 	y = -y;
 
+	// If mouse position is outside of viewport
 	if (x < -1.f || x > 1.f || y < -1.f || y > 1.f) return;
 
-	if (mouse_down[0]) {
-		Particle mp(Vec2f(x, y));
-		Particle* cp = nullptr;
-		if (!mouse0IsPressed) {
+	// If left mouse button is clicked
+	if (mouse_down[0] && !mouse0IsPressed) {
+		// Find closest other particle
+		Particle* cp = particleSystem.GetClosestParticle(Vec2f(x, y), mouseParticleID);
+		const float minSD = 0.2f; // Minimum squared distance
+		// If there is a closest particle, closer than minimum distance
+		if (cp && norm2(cp->m_Position - Vec2f(x, y)) < minSD) {
+			// Add a particle for the mouse
 			mouse0IsPressed = true;
-			cp = particleSystem.GetClosestParticle(Vec2f(x, y));
+			mouseParticle = new Particle(Vec2f(x, y));
+			mouseParticle->m_Mass = 50.f;
+			mouseParticleID = particleSystem.AddParticle(mouseParticle);
+
+			// Add a spring between mouse particle and closest particle
+			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 50.0, 1.0));
 		}
-		if (cp) {
-			//SpringForce sf(&mp, cp, 0.1, 1.0, 1.0);
-			//sf.Apply();
-			//sf.Draw();
-			cp->m_ForceAcc += Vec2f(10.f, 10.f);
-		}
+	}
+	
+	// If left mouse button is being held
+	if (mouse_down[0] && mouse0IsPressed) {
+		// Update position of mouse particle
+		mouseParticle->m_Position = Vec2f(x, y);
 	}
 
 	if ( mouse_down[2] ) {
 	}
 
-	if( mouse_release[0] ) {
+	// If left mouse button is released
+	if( mouse_release[0] && mouse0IsPressed) {
 		mouse0IsPressed = false;
+		// Remove mouse particle and associated spring force
+		if (mouseParticleID != -1) {
+			particleSystem.RemoveParticle(mouseParticleID);
+			mouseParticleID = -1;
+			mouseParticle = nullptr;
+		}
+		if (mouseSpringID != -1) {
+			particleSystem.RemoveForce(mouseSpringID);
+			mouseSpringID = -1;
+		}
 	}
 
 	omx = mx;
@@ -231,7 +255,7 @@ static void mouse_func ( int button, int state, int x, int y )
 	omx = my = y;
 
 	if(!mouse_down[0]){hmx=x; hmy=y;}
-	if(mouse_down[button]) mouse_release[button] = state == GLUT_UP;
+	mouse_release[button] = state == GLUT_UP;
 	if(mouse_down[button]) mouse_shiftclick[button] = glutGetModifiers()==GLUT_ACTIVE_SHIFT;
 	mouse_down[button] = state == GLUT_DOWN;
 }
@@ -253,10 +277,11 @@ static void reshape_func ( int width, int height )
 
 static void idle_func ( void )
 {
-	if (dsim)
+	if (dsim) {
+		get_from_UI();
 		MidPointStep(particleSystem, dt);
-	get_from_UI();
-	remap_GUI();
+		remap_GUI();
+	}
 
 	glutSetWindow(win_id);
 	glutPostRedisplay();

@@ -131,5 +131,8 @@
     <ClInclude Include="ViscousDragForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
