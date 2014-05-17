@@ -15,23 +15,23 @@ void RodConstraint::Draw() const
 
 // return the c: C(x1, y1, x2, y2) = (x1 - x2)^2 + (y1 - y2)^2 - r^2
 double RodConstraint::getC(){
-	const float x1 = m_p1->m_Position[0];
-	const float x2 = m_p2->m_Position[0];
-	const float y1 = m_p1->m_Position[1];
-	const float y2 = m_p2->m_Position[1];
+	const float& x1 = m_p1->m_Position[0];
+	const float& x2 = m_p2->m_Position[0];
+	const float& y1 = m_p1->m_Position[1];
+	const float& y2 = m_p2->m_Position[1];
 	return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) - m_dist*m_dist;
 }
 
 // return the cdot: Cdot(x, y , vx, vy) = (x-y)*vx - ((x-y)*vy)
 double RodConstraint::getCdot(){
-	const float x1 = m_p1->m_Position[0];
-	const float x2 = m_p2->m_Position[0];
-	const float y1 = m_p1->m_Position[1];
-	const float y2 = m_p2->m_Position[1];
-	const float vx1 = m_p1->m_Velocity[0];
-	const float vx2 = m_p2->m_Velocity[0];
-	const float vy1 = m_p1->m_Velocity[1];
-	const float vy2 = m_p2->m_Velocity[1];
+	const float& x1 = m_p1->m_Position[0];
+	const float& x2 = m_p2->m_Position[0];
+	const float& y1 = m_p1->m_Position[1];
+	const float& y2 = m_p2->m_Position[1];
+	const float& vx1 = m_p1->m_Velocity[0];
+	const float& vx2 = m_p2->m_Velocity[0];
+	const float& vy1 = m_p1->m_Velocity[1];
+	const float& vy2 = m_p2->m_Velocity[1];
 	return ((x1 - x2)*(vx1) + (y1 - y2)*(vy1)) - ((x1 - x2)*(vx2) + (y1 - y2)*(vy2));
 }
 
