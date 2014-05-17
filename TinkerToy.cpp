@@ -74,6 +74,7 @@ static void init_system(void)
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
 	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
+	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[3], dist));
 }
 
 /*
