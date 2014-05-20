@@ -2,6 +2,9 @@
 #include "linearSolver.h"
 #include <GL/glut.h>
 
+// Tijdelijke toevoeging, zodat code bij mij weer compileert, vanwege missende functie
+bool isnormal(float f) { return false; }
+
 AngularConstraint::AngularConstraint(Particle *p1, Particle * pjoint, Particle * p2, double angle) :
 m_p1(p1), m_p2(p2), m_joint(pjoint),m_angle(angle) {}
 

@@ -8,8 +8,12 @@ class GravityForce : public Force {
 public:
 	GravityForce(Particle* particle);
 
-	void		Draw() const;
+	// Applies this force to its associated particle
 	void		Apply();
+	// Draws the force on the associated particle
+	void		Draw() const;
+	// Returns a jacobian matrix for this force (all 0)
+	Mat2		GetJacobian(int flags) const;
 
 private:
 	Particle*	particle;

@@ -63,7 +63,7 @@ double ConjGrad(int n, implicitMatrix *A, double x[], double b[],
   vecAssign(n, d, r);
 
   i = 0;
-  if (*steps)
+  if (steps)
     iMax = *steps;
   else
     iMax = MAX_STEPS;
@@ -118,7 +118,7 @@ double ConjGrad(int n, implicitMatrix *A, double x[], double b[],
   free(t);
   free(temp);
 		
-  *steps = i;
+  if (steps) *steps = i;
   return(rSqrLen);
 }
 

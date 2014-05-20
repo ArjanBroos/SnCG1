@@ -18,6 +18,7 @@
 
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
+void ImplicitEulerstep(ParticleSystem& particleSystem, float dt);
 extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
@@ -321,6 +322,10 @@ static void key_func ( unsigned char key, int x, int y )
 	case ' ':
 		dsim = !dsim;
 		break;
+	case 27: // Escape key
+		particleSystem.Clear();
+		exit(0);
+		break;
 	}
 }
 
@@ -354,7 +359,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		MidPointStep(particleSystem, dt);
+		ImplicitEulerstep(particleSystem, dt);
 		remap_GUI();
 	}
 

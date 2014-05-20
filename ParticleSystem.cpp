@@ -234,7 +234,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 
 
 	//Solve
-	implicitMatrix *M = new implicitMatrix(JWJt);
+	implicitMatrix *M = new implicitMatrix(&JWJt);
 	double* lambda = new double[constraints.size()];
 	double* r = new double[constraints.size()];
 
