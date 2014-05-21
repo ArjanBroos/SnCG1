@@ -43,6 +43,12 @@ double AngularConstraint::getCdot(){
 	return 0;
 }
 
+
+bool isnormal(Vec2f result){
+	return false;
+}
+
+
 //return J, if there are more use same order as particl
 //https://www.wolframalpha.com/input/?i=dif++arccos%28%28x*c%2Bb*d%29%2F%28sqrt%28x%5E2+%2B+b%5E2%29*sqrt%28c%5E2+%2B+d%5E2%29%29%29%29
 //https://www.wolframalpha.com/input/?i=dif++arccos%28%28%28a-x%29*%28d-f%29%2B%28b-x%29*%28g-f%29%29%2F%28sqrt%28%28a-x%29%5E2+%2B+%28b-x%29%5E2%29*sqrt%28%28d-f%29%5E2+%2B+%28g-f%29%5E2%29%29%29%29

@@ -53,7 +53,6 @@ vector<Vec2f> RodConstraint::getJdot(){
 vector<Particle> RodConstraint::getParticles(){
 	vector<Particle> result;
 	result.push_back(*m_p1);
-	Particle mp2 = *m_p2;
 	result.push_back(*m_p2);
 	return result;
 }

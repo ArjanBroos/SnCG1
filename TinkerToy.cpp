@@ -6,6 +6,7 @@
 #include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
+#include "LineConstraint.h"
 #include "AngularConstraint.h"
 #include "ViscousDragForce.h"
 #include "imageio.h"
@@ -23,7 +24,8 @@ extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
 void testParticles();
-void cloth();
+void clothPoints();
+void clothPointLine();
 
 /* global variables */
 
@@ -57,7 +59,8 @@ static void clear_data ( void )
 static void init_system(void)
 {
 	//testParticles();
-	cloth();
+	clothPoints();
+	//clothPointLine();
 }
 
 void testParticles(void){
@@ -91,7 +94,7 @@ void testParticles(void){
 
 }
 
-void cloth(void)
+void clothPoints(void)
 {
 	const double dist = 0.1;
 	const Vec2f center(0.0, 0.8);
@@ -101,6 +104,7 @@ void cloth(void)
 	const int particlesy = 6;
 	const bool BendingSpring = true;
 	const bool TorsionSpring = true;
+	const int fixedPoints = 1;
 	
 	float xdir;
 	float ydir;
@@ -153,6 +157,71 @@ void cloth(void)
 
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
+}
+
+void clothPointLine(void)
+{
+	const double dist = 0.1;
+	const Vec2f center(0.0, 0.8);
+	const Vec2f offsetx(dist, 0.0);
+	const Vec2f offsety(0.0, dist);
+	const int particlesx = 6;
+	const int particlesy = 6;
+	const bool BendingSpring = true;
+	const bool TorsionSpring = true;
+	const int fixedPoints = 1;
+	
+	float xdir;
+	float ydir;
+
+	for (xdir = 0; xdir < particlesx;xdir++){
+		for (ydir = 0; ydir < particlesy;ydir++){
+			particleSystem.AddParticle(new Particle(center-offsetx*((float)particlesx-1)/2.f + xdir*offsetx - offsety*ydir));
+		}
+	}
+
+	auto& particles = particleSystem.GetParticles();
+	for (xdir = 1; xdir < particlesx;xdir++){
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, 5.0, 1.0));
+	}
+	for (ydir = 1; ydir < particlesy;ydir++){
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, 5.0, 1.0));
+	}
+	for (xdir = 1; xdir < particlesx;xdir++){
+		for (ydir = 1; ydir < particlesy;ydir++){
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			if (BendingSpring){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, 5.0, 1.0));
+			}
+		}
+	}
+	if (TorsionSpring){
+		for (xdir = 2; xdir < particlesx;xdir++){
+			for (ydir = 0; ydir < particlesy;ydir++){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			}
+		}
+		for (ydir = 2; ydir < particlesy;ydir++){
+			for (xdir = 0; xdir < particlesx;xdir++){
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			}
+		}
+	}
+
+
+	// Add gravity to all particles
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new GravityForce(*p));
+
+	// Add viscous drag to all particles
+	const float drag = 0.1f; // Viscous drag (friction)
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new ViscousDragForce(*p, drag));
+
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
+	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
 }
 
 
