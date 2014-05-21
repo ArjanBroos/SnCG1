@@ -63,6 +63,7 @@ static void init_system(void)
 	clothPointLine();
 }
 
+
 void testParticles(void){
 	const double dist = 0.2;
 	const Vec2f center(0.0, 0.0);
@@ -165,8 +166,8 @@ void clothPointLine(void)
 	const Vec2f center(0.0, 0.8);
 	const Vec2f offsetx(dist, 0.0);
 	const Vec2f offsety(0.0, dist);
-	const int particlesx = 6;
-	const int particlesy = 6;
+	const int particlesx = 9;
+	const int particlesy = 9;
 	const bool BendingSpring = true;
 	const bool TorsionSpring = true;
 	const int fixedPoints = 1;

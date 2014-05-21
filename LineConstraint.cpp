@@ -57,7 +57,6 @@ vector<Vec2f> LineConstraint::getJdot(){
 	//double proj = dir*(m_p1->m_Position-m_start);
 	//Vec2f lineproj = m_direction*(float)proj + m_start;
 	//result.push_back(2.f*(m_p1->m_Velocity-lineproj));
-	m_p1->m_ForceAcc
 
 	result.push_back(Vec2f(0,0));
 

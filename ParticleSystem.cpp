@@ -102,6 +102,11 @@ Particle* ParticleSystem::GetClosestParticle(Vec2f position, int particleID) {
 	return closest;
 }
 
+// Get the CollidableLineSegments in this system
+const std::vector<CollidableLineSegment*>& ParticleSystem::GetCollidableLineSegment() const {
+	return collidableLineSegments;
+}
+
 // Derivative evaluation
 void ParticleSystem::DerivEval(std::vector<Vec2f>& derivatives) {
 	// Clear force accumulators
