@@ -15,6 +15,6 @@ class CollidableLineSegment {
 
   Vec2f m_start;
   Vec2f m_end;
-  double m_k; // bounciness
-  double m_t; // how close for collision: how many times the current velocity?
+  double m_k; // bounciness (0..1)  1 bounces, 0 no bounce
+  double m_t; // how close for collision: how many times the current velocity?  Take 1..4 probably...
 };
