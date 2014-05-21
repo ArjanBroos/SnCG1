@@ -51,6 +51,10 @@ void ModelReader::ReadParticle(std::ifstream& file) {
 	file >> x;
 	file >> y;
 	file >> index;
+	if (index >= p.size()) {
+		std::cerr << "Specify correct number of vertices with the \'i\' identifier before specifying a vertex" << std::endl;
+		return;
+	}
 	p[index] = new Particle(Vec2f(x, y));
 }
 
@@ -58,6 +62,10 @@ void ModelReader::ReadSpring(std::ifstream& file) {
 	unsigned index1, index2;
 	file >> index1;
 	file >> index2;
+	if (!p[index1] || !p[index2]) {
+		std::cerr << "Incorrect index, either " << index1 << " or " << index2 << std::endl;
+		return;
+	}
 	float distance = norm(p[index1]->m_Position - p[index2]->m_Position);
 	sf.push_back(new SpringForce(p[index1], p[index2], distance, ks, kd));
 }

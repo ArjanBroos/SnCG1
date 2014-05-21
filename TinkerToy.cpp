@@ -336,7 +336,7 @@ static void get_from_UI ()
 			mouseParticleID = particleSystem.AddParticle(mouseParticle);
 
 			// Add a spring between mouse particle and closest particle
-			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 40.0, 1.0));
+			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 100.0, 1.0));
 		}
 	}
 	
