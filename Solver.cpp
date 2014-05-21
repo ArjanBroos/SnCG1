@@ -36,13 +36,24 @@ void AddMat2ToMatrix(std::vector<std::vector<float>>& M, const Mat2& m2, unsigne
 	M[i1+1][i2+1]	+= (float)m2[1][1];
 }
 
-void ImplicitEulerstep(ParticleSystem& particleSystem, float dt) {
-	particleSystem.ComputeApplyConstForce();
-
+void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 	std::vector<Particle*> particles = particleSystem.GetParticles();
 	std::vector<Force*> forces = particleSystem.GetForces();
 	const unsigned N = 2;						// 2D particles
 	const unsigned dim = N * particles.size();	// Dimension of particle vector
+
+	// Clear force accumulators
+	for (unsigned i = 0; i < particles.size(); i++) {
+		particles[i]->m_ForceAcc = Vec2f(0.f, 0.f);
+	}
+
+	// Apply forces
+	for (unsigned i = 0; i < forces.size(); i++) {
+		forces[i]->Apply();
+	}
+
+	// Apply constraint forces and feedback
+	particleSystem.ComputeApplyConstForce();
 
 	// Create mass matrix
 	std::vector<std::vector<float>> M(dim, std::vector<float>(dim));
@@ -58,9 +69,8 @@ void ImplicitEulerstep(ParticleSystem& particleSystem, float dt) {
 	for (unsigned i = 0; i < forces.size(); i++) {
 		if (typeid(*forces[i]) == typeid(SpringForce)) {
 			const SpringForce* sf = (SpringForce*)forces[i];
-			const Mat2 jacPos = sf->GetJacobian(JF_P1 | JF_POS);
-			const Mat2 jacVel = sf->GetJacobian(JF_P2 | JF_VEL);
-			const Mat2 A = dt*dt * jacPos + dt * jacVel;
+			const Mat2 jacPos = sf->GetJacobian(0);
+			const Mat2 A = dt*dt * jacPos;
 			const unsigned p1i = sf->GetP1Index();
 			const unsigned p2i = sf->GetP2Index();
 			// Insert Jacobians into M
@@ -90,7 +100,7 @@ void ImplicitEulerstep(ParticleSystem& particleSystem, float dt) {
 	// Use conjugate gradient to solve for Delta v
 	std::vector<double> delta_v(dim);
 	implicitMatrix iM(&M);
-	ConjGrad(dim, &iM, &delta_v[0], &result[0], 0.001f, 0);
+	ConjGrad(dim, &iM, &delta_v[0], &result[0], 1e-20f, 0);
 	
 	// Calculate Delta x
 	std::vector<double> delta_x(dim);
@@ -104,12 +114,6 @@ void ImplicitEulerstep(ParticleSystem& particleSystem, float dt) {
 		Particle* p = particles[i];
 		p->m_Position += Vec2f((float)delta_x[i*N], (float)delta_x[i*N+1]);
 		p->m_Velocity += Vec2f((float)delta_v[i*N], (float)delta_v[i*N+1]);
-		p->m_ForceAcc = Vec2f(0.f, 0.f);
-	}
-
-	// Calculate new forces
-	for (unsigned i = 0; i < forces.size(); i++) {
-		forces[i]->Apply();
 	}
 }
 

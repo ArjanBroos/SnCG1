@@ -19,7 +19,7 @@
 
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
-void ImplicitEulerstep(ParticleSystem& particleSystem, float dt);
+void ImplicitEulerStep(ParticleSystem& particleSystem, float dt);
 extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
@@ -105,6 +105,10 @@ void clothPoints(void)
 	const int particlesy = 6;
 	const bool BendingSpring = true;
 	const bool TorsionSpring = true;
+	const float springStiffness = 1000.f;
+	const float bendingStiffness = 30.f;
+	const float torsionStiffness = 10.f;
+	const float damping = 0.95f;
 	const int fixedPoints = 1;
 	
 	float xdir;
@@ -118,30 +122,30 @@ void clothPoints(void)
 
 	auto& particles = particleSystem.GetParticles();
 	for (xdir = 1; xdir < particlesx;xdir++){
-		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, springStiffness, damping));
 	}
 	for (ydir = 1; ydir < particlesy;ydir++){
-		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, springStiffness, 1.0));
 	}
 	for (xdir = 1; xdir < particlesx;xdir++){
 		for (ydir = 1; ydir < particlesy;ydir++){
-			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
 			if (BendingSpring){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, bendingStiffness, damping));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, bendingStiffness, damping));
 			}
 		}
 	}
 	if (TorsionSpring){
 		for (xdir = 2; xdir < particlesx;xdir++){
 			for (ydir = 0; ydir < particlesy;ydir++){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 		for (ydir = 2; ydir < particlesy;ydir++){
 			for (xdir = 0; xdir < particlesx;xdir++){
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 	}
@@ -169,7 +173,11 @@ void clothPointLine(void)
 	const int particlesx = 9;
 	const int particlesy = 9;
 	const bool BendingSpring = true;
-	const bool TorsionSpring = true;
+	const bool TorsionSpring = false;
+	const float springStiffness = 1000.f;
+	const float bendingStiffness = 80.f;
+	const float torsionStiffness = 10.f;
+	const float damping = 0.95f;
 	const int fixedPoints = 1;
 	
 	float xdir;
@@ -183,30 +191,30 @@ void clothPointLine(void)
 
 	auto& particles = particleSystem.GetParticles();
 	for (xdir = 1; xdir < particlesx;xdir++){
-		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, springStiffness, damping));
 	}
 	for (ydir = 1; ydir < particlesy;ydir++){
-		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, springStiffness, 1.0));
 	}
 	for (xdir = 1; xdir < particlesx;xdir++){
 		for (ydir = 1; ydir < particlesy;ydir++){
-			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
 			if (BendingSpring){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, bendingStiffness, damping));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, bendingStiffness, damping));
 			}
 		}
 	}
 	if (TorsionSpring){
 		for (xdir = 2; xdir < particlesx;xdir++){
 			for (ydir = 0; ydir < particlesy;ydir++){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 		for (ydir = 2; ydir < particlesy;ydir++){
 			for (xdir = 0; xdir < particlesx;xdir++){
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 	}
@@ -320,7 +328,7 @@ static void get_from_UI ()
 			mouseParticleID = particleSystem.AddParticle(mouseParticle);
 
 			// Add a spring between mouse particle and closest particle
-			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 50.0, 1.0));
+			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 40.0, 1.0));
 		}
 	}
 	
@@ -429,8 +437,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		//ImplicitEulerstep(particleSystem, dt);
-		RungeKutta4Step(particleSystem, dt);
+		MidPointStep(particleSystem, dt);
 		remap_GUI();
 	}
 
@@ -494,7 +501,7 @@ int main ( int argc, char ** argv )
 
 	if ( argc == 1 ) {
 		N = 64;
-		dt = 0.0001f;
+		dt = 0.001f;
 		d = 5.f;
 		fprintf ( stderr, "Using defaults : N=%d dt=%g d=%g\n",
 			N, dt, d );
