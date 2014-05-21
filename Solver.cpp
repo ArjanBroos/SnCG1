@@ -47,6 +47,12 @@ void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 		particles[i]->m_ForceAcc = Vec2f(0.f, 0.f);
 	}
 
+	auto& collidableLineSegments = particleSystem.GetCollidableLineSegment();
+
+	for each (CollidableLineSegment* cls in collidableLineSegments){
+		cls->handleCollisions(particles);
+	}
+
 	// Apply forces
 	for (unsigned i = 0; i < forces.size(); i++) {
 		forces[i]->Apply();

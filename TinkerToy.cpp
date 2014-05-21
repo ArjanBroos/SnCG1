@@ -28,6 +28,7 @@ void testParticles();
 void clothPoints();
 void clothPointLine();
 void CreatePuppet();
+void clothLineLine();
 
 /* global variables */
 
@@ -63,7 +64,8 @@ static void init_system(void)
 	//testParticles();
 	//clothPoints();
 	//clothPointLine();
-	CreatePuppet();
+	clothLineLine();
+	//CreatePuppet();
 }
 
 void CreatePuppet() {
@@ -242,6 +244,76 @@ void clothPointLine(void)
 }
 
 
+void clothLineLine(void)
+{
+	const double dist = 0.1;
+	const Vec2f center(0.0, 0.8);
+	const Vec2f offsetx(dist, 0.0);
+	const Vec2f offsety(0.0, dist);
+	const int particlesx = 5;
+	const int particlesy = 6;
+	const bool BendingSpring = true;
+	const bool TorsionSpring = false;
+	const float springStiffness = 1000.f;
+	const float bendingStiffness = 80.f;
+	const float torsionStiffness = 10.f;
+	const float damping = 0.85f;
+	const int fixedPoints = 1;
+	
+	float xdir;
+	float ydir;
+
+	for (xdir = 0; xdir < particlesx;xdir++){
+		for (ydir = 0; ydir < particlesy;ydir++){
+			particleSystem.AddParticle(new Particle(center-offsetx*((float)particlesx-1)/2.f + xdir*offsetx - offsety*ydir));
+		}
+	}
+
+	auto& particles = particleSystem.GetParticles();
+	for (xdir = 1; xdir < particlesx;xdir++){
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, springStiffness, damping));
+	}
+	for (ydir = 1; ydir < particlesy;ydir++){
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, springStiffness, 1.0));
+	}
+	for (xdir = 1; xdir < particlesx;xdir++){
+		for (ydir = 1; ydir < particlesy;ydir++){
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			if (BendingSpring){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, bendingStiffness, damping));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, bendingStiffness, damping));
+			}
+		}
+	}
+	if (TorsionSpring){
+		for (xdir = 2; xdir < particlesx;xdir++){
+			for (ydir = 0; ydir < particlesy;ydir++){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
+			}
+		}
+		for (ydir = 2; ydir < particlesy;ydir++){
+			for (xdir = 0; xdir < particlesx;xdir++){
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
+			}
+		}
+	}
+
+
+	// Add gravity to all particles
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new GravityForce(*p));
+
+	// Add viscous drag to all particles
+	const float drag = 0.1f; // Viscous drag (friction)
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new ViscousDragForce(*p, drag));
+
+	particleSystem.AddConstraint(new LineConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f, -offsetx));
+	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,0.1),Vec2f(0.2,0.35),25,0.009));
+}
+
 /*
 ----------------------------------------------------------------------
 OpenGL specific drawing routines
@@ -301,6 +373,13 @@ static void draw_constraints ( void )
 {
 	auto& constraints = particleSystem.GetConstraints();
 	for (auto c = constraints.begin(); c != constraints.end(); c++)
+		(*c)->Draw();
+}
+
+static void draw_collidableLineSegments ( void )
+{
+	auto& collidableLineSegment = particleSystem.GetCollidableLineSegment();
+	for (auto c = collidableLineSegment.begin(); c != collidableLineSegment.end(); c++)
 		(*c)->Draw();
 }
 
@@ -460,8 +539,9 @@ static void display_func ( void )
 	draw_forces();
 	draw_constraints();
 	draw_particles();
+	draw_collidableLineSegments();
 
-	post_display ();
+	post_display();
 }
 
 
