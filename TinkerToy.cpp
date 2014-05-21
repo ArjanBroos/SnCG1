@@ -59,8 +59,8 @@ static void clear_data ( void )
 static void init_system(void)
 {
 	//testParticles();
-	clothPoints();
-	//clothPointLine();
+	//clothPoints();
+	clothPointLine();
 }
 
 void testParticles(void){
@@ -428,7 +428,8 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		ImplicitEulerstep(particleSystem, dt);
+		//ImplicitEulerstep(particleSystem, dt);
+		RungeKutta4Step(particleSystem, dt);
 		remap_GUI();
 	}
 

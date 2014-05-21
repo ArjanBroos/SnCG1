@@ -13,6 +13,7 @@ class LineConstraint : public Constraint {
   std::vector<Vec2f> getJ();
   std::vector<Vec2f> getJdot();
   std::vector<Particle> getParticles();
+  gfx::Vec2f normalPerpendicularVector();
 
  private:
 

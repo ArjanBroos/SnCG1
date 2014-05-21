@@ -29,7 +29,7 @@ double CircularWireConstraint::getC(){
 	return (m_p->m_Position[0] - m_center[0])*(m_p->m_Position[0] - m_center[0]) + (m_p->m_Position[1] - m_center[1])*(m_p->m_Position[1] - m_center[1]) - m_radius*m_radius;
 }
 
-// return the cdot: C(x, y) = (x-c) * v
+// return the cdot: C(x) = (x-c) * v
 double CircularWireConstraint::getCdot(){
 	return (m_p->m_Position[0] - m_center[0])*m_p->m_Velocity[0] + (m_p->m_Position[1] - m_center[1])*m_p->m_Velocity[1];
 }
