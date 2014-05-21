@@ -20,4 +20,6 @@ class AngularConstraint : public Constraint {
   Particle * const m_p2;
   Particle * const m_joint;
   double const m_angle;
+  float max;
+  float min;
 };
