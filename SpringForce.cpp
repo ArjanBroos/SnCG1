@@ -20,62 +20,49 @@ void SpringForce::Apply() {
 	Vec2f i = m_p1->m_Velocity - m_p2->m_Velocity;
 
 	float nl = norm(l);
-	// Hook's law
-	Vec2f fp1 = (float)(m_ks * (nl - m_dist) + m_kd * (i*l) / nl) * (l / nl);
+	// Hook's law, IGNORE DAMPING FOR NOW
+	Vec2f fp1 = ((float)m_ks * (nl - (float)m_dist) + (float)m_kd * (i * l) / nl) * (l / nl);
 	m_p1->m_ForceAcc -= fp1;
 	m_p2->m_ForceAcc += fp1;
 }
 
 // Returns a jacobian matrix for this force
-// Use the flags parameter to specify which particle
-// Also use the flags parameter to specify with respect to what we calculate this matrix (position or velocity)
-// For example: GetJacobian(JF_P1 | JF_POS) will return the jacobian matrix for particle #1, wrt position
 Mat2 SpringForce::GetJacobian(int flags) const {
 	Mat2 result;	// Will hold the requested Jacobian matrix for this force
 
-	// Shorter aliases
-	const float& x1 = m_p1->m_Position[0];
-	const float& x2 = m_p2->m_Position[0];
-	const float& y1 = m_p1->m_Position[1];
-	const float& y2 = m_p2->m_Position[1];
-	const float& vx1 = m_p1->m_Velocity[0];
-	const float& vx2 = m_p2->m_Velocity[0];
-	const float& vy1 = m_p1->m_Velocity[1];
-	const float& vy2 = m_p2->m_Velocity[1];
-
 	// Partial calculations
-	const float x12 = x1 - x2;
-	const float y12 = y1 - y2;
+	const float x12 = m_p1->m_Position[0] - m_p2->m_Position[0];
+	const float y12 = m_p1->m_Position[1] - m_p2->m_Position[1];
 	const float x12s = x12*x12;
 	const float y12s = y12*y12;
 	const float ls = x12s + y12s;	// Distance squared
 	const float l = sqrt(ls);		// Distance
-	const float vx12 = vx1 - vx2;
-	const float vy12 = vy1 - vy2;
 
-	if (flags & JF_POS) { // Jacobian wrt position
-		result[0][0] = m_ks * (x12 - m_dist) * (-x12 / (ls * l)) + m_ks * (x12 / l);	// df_x / dx1
-		result[0][1] = (m_kd * vx12 * -2.f * x12s * y12) / (ls * ls);					// df_x / dy1
-		result[1][0] = (m_kd * vy12 * -2.f * y12s * x12) / (ls * ls);					// df_y / dx1
-		result[1][1] = m_ks * (y12 - m_dist) * (-y12 / (ls * l)) + m_ks * (y12 / l);	// df_y / dy1
-	} else if (flags & JF_VEL) { // Jacobian wrt velocity
-		result[0][0] = (m_kd * x12s) / ls;	// df_x / dvx1
-		result[0][1] = 0.f;					// df_x / dvy1
-		result[1][0] = 0.f;					// df_y / dvx1
-		result[1][1] = (m_kd * y12s) / ls;	// df_y / dvy1
-	} else {
-		std::cerr << "Wrong flags in GetJacobian for spring force (pos vs vel)" << std::endl;
-	}
+	result[0][0] = (m_ks * (y12s - x12s) / ls) - (m_ks * m_dist * y12s) / (ls * l);		// df_x / dx1
+	result[0][1] = (m_ks * m_dist * y12) / (ls * l) + ((x12 - 1.f) * m_ks * y12) / ls;	// df_x / dy1
+	result[1][0] = (m_ks * m_dist * x12) / (ls * l) + ((y12 - 1.f) * m_ks * x12) / ls;	// df_y / dx1
+	result[1][1] = (m_ks * (x12s - y12s) / ls) - (m_ks * m_dist * x12s) / (ls * l);		// df_y / dy1
 
-	if (flags & JF_P1) { // For particle 1
-		return result;
-	} else if (flags & JF_P2) { // For particle 2
-		return -result;
-	} else {
-		std::cerr << "Wrong flags in GetJacobian for spring force (p1 vs p2)" << std::endl;
-		return result;
-	}
+	return result;
 }
+
+/*
+Mat2 SpringForce::GetJacobian(int flags) const {
+	const Vec2f xij = m_p1->m_Position - m_p2->m_Position;
+	const float l = norm(xij);
+	const Vec2f xijn = xij / l;
+	
+	Mat2 mxijn;
+	mxijn[0][0] = xijn[0] * xijn[0]; mxijn[0][1] = xijn[0] * xijn[1];
+	mxijn[1][0] = xijn[1] * xijn[0]; mxijn[1][1] = xijn[1] * xijn[1];
+
+	Mat2 I;
+	I[0][0] = 1.f; I[0][1] = 0.f;
+	I[1][0] = 0.f; I[1][1] = 1.f;
+
+	Mat2 jac = -m_ks * ( (1.0 - m_dist / l) * (I - mxijn) + mxijn );
+	return jac;
+}*/
 
 // Return the index of particle 1
  unsigned SpringForce::GetP1Index() const {

@@ -18,7 +18,7 @@
 
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
-void ImplicitEulerstep(ParticleSystem& particleSystem, float dt);
+void ImplicitEulerStep(ParticleSystem& particleSystem, float dt);
 extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
@@ -101,6 +101,10 @@ void cloth(void)
 	const int particlesy = 6;
 	const bool BendingSpring = true;
 	const bool TorsionSpring = true;
+	const float springStiffness = 1000.f;
+	const float bendingStiffness = 30.f;
+	const float torsionStiffness = 10.f;
+	const float damping = 0.95f;
 	
 	float xdir;
 	float ydir;
@@ -113,30 +117,30 @@ void cloth(void)
 
 	auto& particles = particleSystem.GetParticles();
 	for (xdir = 1; xdir < particlesx;xdir++){
-		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, springStiffness, damping));
 	}
 	for (ydir = 1; ydir < particlesy;ydir++){
-		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, 5.0, 1.0));
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, springStiffness, 1.0));
 	}
 	for (xdir = 1; xdir < particlesx;xdir++){
 		for (ydir = 1; ydir < particlesy;ydir++){
-			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
 			if (BendingSpring){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, bendingStiffness, damping));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, bendingStiffness, damping));
 			}
 		}
 	}
 	if (TorsionSpring){
 		for (xdir = 2; xdir < particlesx;xdir++){
 			for (ydir = 0; ydir < particlesy;ydir++){
-				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 		for (ydir = 2; ydir < particlesy;ydir++){
 			for (xdir = 0; xdir < particlesx;xdir++){
-				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, 5.0, 1.0));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
 			}
 		}
 	}
@@ -359,7 +363,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		ImplicitEulerstep(particleSystem, dt);
+		ImplicitEulerStep(particleSystem, dt);
 		remap_GUI();
 	}
 
@@ -423,7 +427,7 @@ int main ( int argc, char ** argv )
 
 	if ( argc == 1 ) {
 		N = 64;
-		dt = 0.0001f;
+		dt = 0.001f;
 		d = 5.f;
 		fprintf ( stderr, "Using defaults : N=%d dt=%g d=%g\n",
 			N, dt, d );

@@ -129,7 +129,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	int n = 2;
-	float ks = 0.31f;
+	float ks = 50.f;
 	float kd = 0.62f;
 	//Make J
 	J.resize(constraints.size());
@@ -243,7 +243,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	int d = 100;
-	ConjGrad(constraints.size(), M, lambda, r, 0.0000000000001, &d);
+	ConjGrad(constraints.size(), M, lambda, r, 1e-20f, &d);
 	delete M;
 	delete[] r;
 
