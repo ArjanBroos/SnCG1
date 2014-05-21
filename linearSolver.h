@@ -15,21 +15,21 @@ using namespace std;
 class implicitMatrix
 {
 public: 
-	implicitMatrix(vector< vector<float> > x) {
+	implicitMatrix(vector<vector<float>>* x) {
 		matrix = x;
 	}
 
 	virtual void matVecMult(double x[], double r[]) {
-		for (unsigned i = 0; i<matrix.size(); i++) {
+		for (unsigned i = 0; i<matrix->size(); i++) {
 			r[i] = 0;
 			for (unsigned j = 0; j < matrix[0].size(); j++){
-				r[i] += matrix[i][j] * x[j];
+				r[i] += (*matrix)[i][j] * x[j];
 			}
 		}
 	}
 
 private:
-	vector< vector<float> > matrix;
+	vector<vector<float>>* matrix;
 };
 
 // Matrix class the solver will accept
@@ -39,7 +39,6 @@ class implicitMatrixWithTrans : public implicitMatrix
   virtual void matVecMult(double x[], double r[]) = 0;
   virtual void matTransVecMult(double x[], double r[]) = 0;
 };
-
 
 
 // Solve Ax = b for a symmetric, positive definite matrix A

@@ -3,6 +3,9 @@
 #include <GL/glut.h>
 
 
+// Tijdelijke toevoeging, zodat code bij mij weer compileert, vanwege missende functie
+bool isnormal(float f) { return false; }
+
 AngularConstraint::AngularConstraint(Particle *p1, Particle * pjoint, Particle * p2, double angle) :
 m_p1(p1), m_p2(p2), m_joint(pjoint),m_angle(angle) {}
 
@@ -50,7 +53,11 @@ double AngularConstraint::getCdot(){
 	return 0;
 }
 
-//return J, if there are more use same order as particle
+bool isnormal(Vec2f result){
+	return false;
+}
+
+//return J, if there are more use same order as particl
 //https://www.wolframalpha.com/input/?i=dif++arccos%28%28x*c%2Bb*d%29%2F%28sqrt%28x%5E2+%2B+b%5E2%29*sqrt%28c%5E2+%2B+d%5E2%29%29%29%29
 //https://www.wolframalpha.com/input/?i=dif++arccos%28%28%28a-x%29*%28d-f%29%2B%28b-x%29*%28g-f%29%29%2F%28sqrt%28%28a-x%29%5E2+%2B+%28b-x%29%5E2%29*sqrt%28%28d-f%29%5E2+%2B+%28g-f%29%5E2%29%29%29%29
 //https://www.wolframalpha.com/input/?i=D%5BArcCos%5B%28%28b+-+h%29+%28g+-+h%29+%2B+%28a+-+c%29+%28d+-+c%29%29%2F%28Sqrt%5B%28b+-+h%29%5E2+%2B+%28a+-+c%29%5E2%5D+Sqrt%5B%28g+-+h%29%5E2+%2B+%28d+-+c%29%5E2%5D%29%5D%2C+h%5D
