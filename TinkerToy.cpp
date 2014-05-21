@@ -6,6 +6,7 @@
 #include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
+#include "LineConstraint.h"
 #include "AngularConstraint.h"
 #include "ViscousDragForce.h"
 #include "imageio.h"
@@ -23,7 +24,8 @@ extern void MidPointStep(ParticleSystem& particleSystem, float dt);
 extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 
 void testParticles();
-void cloth();
+void clothPoints();
+void clothPointLine();
 
 /* global variables */
 
@@ -57,7 +59,8 @@ static void clear_data ( void )
 static void init_system(void)
 {
 	//testParticles();
-	cloth();
+	//clothPoints();
+	clothPointLine();
 }
 
 void testParticles(void){
@@ -91,7 +94,7 @@ void testParticles(void){
 
 }
 
-void cloth(void)
+void clothPoints(void)
 {
 	const double dist = 0.1;
 	const Vec2f center(0.0, 0.8);
@@ -105,6 +108,7 @@ void cloth(void)
 	const float bendingStiffness = 30.f;
 	const float torsionStiffness = 10.f;
 	const float damping = 0.95f;
+	const int fixedPoints = 1;
 	
 	float xdir;
 	float ydir;
@@ -157,6 +161,75 @@ void cloth(void)
 
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
+}
+
+void clothPointLine(void)
+{
+	const double dist = 0.1;
+	const Vec2f center(0.0, 0.8);
+	const Vec2f offsetx(dist, 0.0);
+	const Vec2f offsety(0.0, dist);
+	const int particlesx = 6;
+	const int particlesy = 6;
+	const bool BendingSpring = true;
+	const bool TorsionSpring = false;
+	const float springStiffness = 1000.f;
+	const float bendingStiffness = 80.f;
+	const float torsionStiffness = 10.f;
+	const float damping = 0.95f;
+	const int fixedPoints = 1;
+	
+	float xdir;
+	float ydir;
+
+	for (xdir = 0; xdir < particlesx;xdir++){
+		for (ydir = 0; ydir < particlesy;ydir++){
+			particleSystem.AddParticle(new Particle(center-offsetx*((float)particlesx-1)/2.f + xdir*offsetx - offsety*ydir));
+		}
+	}
+
+	auto& particles = particleSystem.GetParticles();
+	for (xdir = 1; xdir < particlesx;xdir++){
+		particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy], particles[xdir*particlesy], dist, springStiffness, damping));
+	}
+	for (ydir = 1; ydir < particlesy;ydir++){
+		particleSystem.AddForce(new SpringForce(particles[ydir-1], particles[ydir], dist, springStiffness, 1.0));
+	}
+	for (xdir = 1; xdir < particlesx;xdir++){
+		for (ydir = 1; ydir < particlesy;ydir++){
+			particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, springStiffness, damping));
+			if (BendingSpring){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-1)*particlesy+ydir-1], particles[xdir*particlesy+ydir], dist, bendingStiffness, damping));
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-1], particles[(xdir-1)*particlesy+ydir], dist, bendingStiffness, damping));
+			}
+		}
+	}
+	if (TorsionSpring){
+		for (xdir = 2; xdir < particlesx;xdir++){
+			for (ydir = 0; ydir < particlesy;ydir++){
+				particleSystem.AddForce(new SpringForce(particles[(xdir-2)*particlesy+ydir], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
+			}
+		}
+		for (ydir = 2; ydir < particlesy;ydir++){
+			for (xdir = 0; xdir < particlesx;xdir++){
+				particleSystem.AddForce(new SpringForce(particles[xdir*particlesy+ydir-2], particles[xdir*particlesy+ydir], dist, torsionStiffness, damping));
+			}
+		}
+	}
+
+
+	// Add gravity to all particles
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new GravityForce(*p));
+
+	// Add viscous drag to all particles
+	const float drag = 0.1f; // Viscous drag (friction)
+	for (auto p = particles.begin(); p != particles.end(); p++)
+		particleSystem.AddForce(new ViscousDragForce(*p, drag));
+
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f+offsety/2.f, dist/2));
+	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
 }
 
 
@@ -254,7 +327,7 @@ static void get_from_UI ()
 			mouseParticleID = particleSystem.AddParticle(mouseParticle);
 
 			// Add a spring between mouse particle and closest particle
-			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 50.0, 1.0));
+			mouseSpringID = particleSystem.AddForce(new SpringForce(mouseParticle, cp, 0.1, 40.0, 1.0));
 		}
 	}
 	
@@ -363,7 +436,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		ImplicitEulerStep(particleSystem, dt);
+		MidPointStep(particleSystem, dt);
 		remap_GUI();
 	}
 
