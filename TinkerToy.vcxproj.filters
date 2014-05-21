@@ -54,6 +54,9 @@
     <ClCompile Include="LineConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpringAngleForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircularWireConstraint.h">
@@ -134,10 +137,10 @@
     <ClInclude Include="ViscousDragForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
+    <ClInclude Include="LineConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LineConstraint.h">
+    <ClInclude Include="SpringAngleForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
