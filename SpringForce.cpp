@@ -27,7 +27,7 @@ void SpringForce::Apply() {
 }
 
 // Returns a jacobian matrix for this force
-Mat2 SpringForce::GetJacobian(int flags) const {
+/*Mat2 SpringForce::GetJacobian(int flags) const {
 	Mat2 result;	// Will hold the requested Jacobian matrix for this force
 
 	// Partial calculations
@@ -44,9 +44,9 @@ Mat2 SpringForce::GetJacobian(int flags) const {
 	result[1][1] = (m_ks * (x12s - y12s) / ls) - (m_ks * m_dist * x12s) / (ls * l);		// df_y / dy1
 
 	return result;
-}
+}*/
 
-/*
+
 Mat2 SpringForce::GetJacobian(int flags) const {
 	const Vec2f xij = m_p1->m_Position - m_p2->m_Position;
 	const float l = norm(xij);
@@ -62,7 +62,7 @@ Mat2 SpringForce::GetJacobian(int flags) const {
 
 	Mat2 jac = -m_ks * ( (1.0 - m_dist / l) * (I - mxijn) + mxijn );
 	return jac;
-}*/
+}
 
 // Return the index of particle 1
  unsigned SpringForce::GetP1Index() const {

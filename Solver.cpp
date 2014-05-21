@@ -100,7 +100,7 @@ void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 	// Use conjugate gradient to solve for Delta v
 	std::vector<double> delta_v(dim);
 	implicitMatrix iM(&M);
-	ConjGrad(dim, &iM, &delta_v[0], &result[0], 1e-20f, 0);
+	ConjGrad(dim, &iM, &delta_v[0], &result[0], 1e-30f, 0);
 	
 	// Calculate Delta x
 	std::vector<double> delta_x(dim);

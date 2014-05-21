@@ -177,7 +177,7 @@ void clothPointLine(void)
 	const float springStiffness = 1000.f;
 	const float bendingStiffness = 80.f;
 	const float torsionStiffness = 10.f;
-	const float damping = 0.95f;
+	const float damping = 0.85f;
 	const int fixedPoints = 1;
 	
 	float xdir;
@@ -437,7 +437,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		MidPointStep(particleSystem, dt);
+		ImplicitEulerStep(particleSystem, dt);
 		remap_GUI();
 	}
 
