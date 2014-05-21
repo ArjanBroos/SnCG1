@@ -16,7 +16,7 @@ void SpringForce::Apply() {
 	Vec2f l = m_p1->m_Position - m_p2->m_Position;
 	Vec2f i = m_p1->m_Velocity - m_p2->m_Velocity;
 
-	float nl = norm(l);
+	float nl = sqrt(l[0]*l[0]+l[1]*l[1]);
 	// Hook's law
 	Vec2f fp1 = (float)(m_ks * (nl - m_dist) + m_kd * (i*l) / nl) * (l / nl);
 	m_p1->m_ForceAcc -= fp1;
