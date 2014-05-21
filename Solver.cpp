@@ -10,6 +10,11 @@
 void ExplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 	// Retrieve current state
 	auto& particles = particleSystem.GetParticles();
+	auto& collidableLineSegments = particleSystem.GetCollidableLineSegment();
+
+	for each (CollidableLineSegment* cls in collidableLineSegments){
+		cls->handleCollisions(particles);
+	}
 
 	// Evaluate derivatives
 	std::vector<Vec2f> derivatives;
@@ -115,6 +120,12 @@ void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 void MidPointStep(ParticleSystem& particleSystem, float dt) {
 	auto& particles = particleSystem.GetParticles();
 
+	auto& collidableLineSegments = particleSystem.GetCollidableLineSegment();
+
+	for each (CollidableLineSegment* cls in collidableLineSegments){
+		cls->handleCollisions(particles);
+	}
+
 	// Save current state
 	std::vector<Vec2f> positions;
 	std::vector<Vec2f> velocities;
@@ -150,6 +161,12 @@ void MidPointStep(ParticleSystem& particleSystem, float dt) {
 
 void RungeKutta4Step(ParticleSystem& particleSystem, float dt) {
 	auto& particles = particleSystem.GetParticles();
+
+	auto& collidableLineSegments = particleSystem.GetCollidableLineSegment();
+
+	for each (CollidableLineSegment* cls in collidableLineSegments){
+		cls->handleCollisions(particles);
+	}
 
 	// Save current state
 	std::vector<Vec2f> positions;

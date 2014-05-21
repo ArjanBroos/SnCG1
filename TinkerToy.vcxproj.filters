@@ -57,6 +57,9 @@
     <ClCompile Include="SpringAngleForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CollidableLineSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircularWireConstraint.h">
@@ -141,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpringAngleForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollidableLineSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClCompile Include="AngularConstraint.cpp" />
     <ClCompile Include="CircularWireConstraint.cpp" />
+    <ClCompile Include="CollidableLineSegment.cpp" />
     <ClCompile Include="GravityForce.cpp" />
     <ClCompile Include="imageio.cpp" />
     <ClCompile Include="linearSolver.cpp" />
@@ -95,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="AngularConstraint.h" />
     <ClInclude Include="CircularWireConstraint.h" />
+    <ClInclude Include="CollidableLineSegment.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="LineConstraint.h" />
     <ClInclude Include="util.h" />

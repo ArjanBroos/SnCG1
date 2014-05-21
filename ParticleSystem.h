@@ -4,6 +4,7 @@
 #include <vector>
 #include "Force.h"
 #include "Constraint.h"
+#include "CollidableLineSegment.h"
 
 // A system used for the simulation of particles
 class ParticleSystem {
@@ -40,6 +41,8 @@ public:
 	const std::vector<Constraint*>&	GetConstraints() const;
 	// Get the particle closest to position, excluding particle with particleID
 	Particle*						GetClosestParticle(Vec2f position, int particleID);
+	// Get the CollidableLineSegments in this system
+	const std::vector<CollidableLineSegment*>&	GetCollidableLineSegment() const;
 
 	// Derivative evaluation
 	void							DerivEval(std::vector<Vec2f>& derivatives);
@@ -57,6 +60,7 @@ private:
 	std::vector<Particle*>			particles;
 	std::vector<Force*>				forces;
 	std::vector<Constraint*>		constraints;
+	std::vector<CollidableLineSegment*> collidableLineSegments;
 
 	// Counters used for assigning unique ID's
 	int								particleIDCounter;
