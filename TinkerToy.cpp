@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include "ParticleSystem.h"
+#include "ModelReader.h"
 
 /* external definitions (from solver) */
 extern void ExplicitEulerStep(ParticleSystem& particleSystem, float dt);
@@ -26,6 +27,7 @@ extern void RungeKutta4Step(ParticleSystem& particleSystem, float dt);
 void testParticles();
 void clothPoints();
 void clothPointLine();
+void CreatePuppet();
 
 /* global variables */
 
@@ -60,7 +62,13 @@ static void init_system(void)
 {
 	//testParticles();
 	//clothPoints();
-	clothPointLine();
+	//clothPointLine();
+	CreatePuppet();
+}
+
+void CreatePuppet() {
+	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
+	mr.ReadModel("puppet.txt", particleSystem);
 }
 
 
