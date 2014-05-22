@@ -3,6 +3,7 @@
 
 #include "Particle.h"
 #include "SpringForce.h"
+#include "SpringAngleForce.h"
 #include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
@@ -58,9 +59,9 @@ static void clear_data ( void )
 
 static void init_system(void)
 {
-	//testParticles();
+	testParticles();
 	//clothPoints();
-	clothPointLine();
+	//clothPointLine();
 }
 
 
@@ -90,7 +91,7 @@ void testParticles(void){
 	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
+	particleSystem.AddForce(new SpringAngleForce(particles[3], particles[0], particles[1], 0.5*M_PI, 5.0,1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[3], dist));
 
 }
