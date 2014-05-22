@@ -64,13 +64,14 @@ static void init_system(void)
 	//testParticles();
 	//clothPoints();
 	//clothPointLine();
-	clothLineLine();
-	//CreatePuppet();
+	//clothLineLine();
+	CreatePuppet();
 }
 
 void CreatePuppet() {
-	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
+	ModelReader mr(300.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
+	particleSystem.AddConstraint(new LineConstraint(particleSystem.GetParticles()[0], Vec2f(-1.0f, 0.3f), Vec2f(1.f, 0.f)));
 }
 
 
@@ -311,7 +312,7 @@ void clothLineLine(void)
 
 	particleSystem.AddConstraint(new LineConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f, -offsetx));
 	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
-	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,0.1),Vec2f(0.2,0.35),25,0.009));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,0.1),Vec2f(0.2,0.45),10,0.008));
 }
 
 /*
