@@ -30,6 +30,7 @@ void clothPoints();
 void clothPointLine();
 void CreatePuppet();
 void clothLineLine();
+void TreeOrThreeCircles();
 
 /* global variables */
 
@@ -62,19 +63,43 @@ static void clear_data ( void )
 
 static void init_system(void)
 {
-	testParticles();
+	//testParticles();
 	//clothPoints();
 	//clothPointLine();
-<<<<<<< HEAD
-=======
-	clothLineLine();
+	//clothLineLine();
 	//CreatePuppet();
+	TreeOrThreeCircles();
 }
 
 void CreatePuppet() {
 	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
->>>>>>> 924850b75203e96eb68c273f0664c6acddcf59c4
+}
+
+void TreeOrThreeCircles() {
+	const double dist = 0.1;
+	const Vec2f center(0.0, 0.0);
+	const Vec2f offset(dist, 0.0);
+	const Vec2f ofset(0.0,dist);
+
+	particleSystem.AddParticle(new Particle(center + offset));
+	particleSystem.AddParticle(new Particle(center + offset + offset ));
+	particleSystem.AddParticle(new Particle(center + offset + offset + offset ));
+	particleSystem.AddParticle(new Particle(center + offset + offset + offset+ofset));
+	particleSystem.AddParticle(new Particle(center + offset + offset + offset +offset));
+
+	auto& particles = particleSystem.GetParticles();
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[1], center, 2*dist));
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[2], center, 3*dist));
+
+	particleSystem.AddForce(new SpringForce(particles[0], particles[1], 1.5*dist,5.0,1.0));
+	particleSystem.AddForce(new SpringForce(particles[0], particles[2], 3*dist,5.0,1.0));
+	particleSystem.AddConstraint(new RodConstraint(particles[1], particles[3], 2 * dist));
+	particleSystem.AddForce(new SpringForce(particles[2], particles[4], dist, 5.0, 1.0));
+
+	particleSystem.AddForce(new GravityForce(particles[4]));
+	particleSystem.AddForce(new GravityForce(particles[3]));
 }
 
 
@@ -528,7 +553,7 @@ static void idle_func ( void )
 {
 	if (dsim) {
 		get_from_UI();
-		ImplicitEulerStep(particleSystem, dt);
+		RungeKutta4Step(particleSystem, dt);
 		remap_GUI();
 	}
 
@@ -593,7 +618,7 @@ int main ( int argc, char ** argv )
 
 	if ( argc == 1 ) {
 		N = 64;
-		dt = 0.001f;
+		dt = 0.005f;
 		d = 5.f;
 		fprintf ( stderr, "Using defaults : N=%d dt=%g d=%g\n",
 			N, dt, d );
