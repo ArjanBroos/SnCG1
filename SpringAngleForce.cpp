@@ -38,8 +38,8 @@ void SpringAngleForce::Apply() {
 	if (restangle>M_PI){
 		restangle = ((restangle)-2 * M_PI);
 	}
-	m_p1->m_ForceAcc -= (m_ks*restangle)/lengtha;
-	m_p2->m_ForceAcc += (m_ks*restangle) / lengthb;
+	m_p1->m_ForceAcc += Vec2f(((m_ks*restangle) / (lengtha*2))*a[1], -((m_ks*restangle) / (lengtha*2))* a[0]);
+	m_p2->m_ForceAcc -= Vec2f(b[1] * (m_ks*restangle) / (lengthb*2), -b[0] * (m_ks*restangle) / (lengthb*2));
 
 }
 

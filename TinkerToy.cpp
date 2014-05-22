@@ -65,7 +65,7 @@ static void clear_data ( void )
 
 static void init_system(void)
 {
-	//testParticles();
+	testParticles();
 	//clothPoints();
 	//clothPointLine();
 	//clothLineLine();
@@ -75,7 +75,7 @@ static void init_system(void)
 	//clothLineLine();
 	//clothLineLine();
 	//CreatePuppet();
-	CreatePuppetBoxed();
+	//CreatePuppetBoxed();
 }
 
 void CreatePuppet() {
