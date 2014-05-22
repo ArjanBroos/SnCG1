@@ -25,11 +25,11 @@ void SpringAngleForce::Draw() const {
 // Apply the force to the associated particles
 void SpringAngleForce::Apply() {
 	Vec2f a = m_p1->m_Position - m_joint->m_Position;
-	float length = sqrt(a[0] * a[0] + a[1] * a[1]);
-	a /= length;
+	float lengtha = sqrt(a[0] * a[0] + a[1] * a[1]);
+	a /= lengtha;
 	Vec2f b = m_p2->m_Position - m_joint->m_Position;
-	length = sqrt(b[0] * b[0] + b[1] * b[1]);
-	b /= length;
+	float lengthb = sqrt(b[0] * b[0] + b[1] * b[1]);
+	b /= lengthb;
 	float restangle = acos(a*b);
 	if ((a[0] * b[1] - a[1] * b[0])>0){
 		restangle = 2 * M_PI - restangle;
@@ -38,8 +38,8 @@ void SpringAngleForce::Apply() {
 	if (restangle>M_PI){
 		restangle = ((restangle)-2 * M_PI);
 	}
-	m_p1->m_ForceAcc = 0;
-	m_p2->m_ForceAcc = 0;
+	m_p1->m_ForceAcc -= (m_ks*restangle)/lengtha;
+	m_p2->m_ForceAcc += (m_ks*restangle) / lengthb;
 
 }
 

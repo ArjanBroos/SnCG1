@@ -3,6 +3,7 @@
 
 #include "Particle.h"
 #include "SpringForce.h"
+#include "SpringAngleForce.h"
 #include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
@@ -62,10 +63,16 @@ static void clear_data ( void )
 
 static void init_system(void)
 {
-	//testParticles();
+	testParticles();
 	//clothPoints();
 	//clothPointLine();
+<<<<<<< HEAD
 	//clothLineLine();
+=======
+<<<<<<< HEAD
+=======
+	clothLineLine();
+>>>>>>> 02cce3b4e19305e653b17127fd1708c52193238c
 	//CreatePuppet();
 	CreatePuppetBoxed();
 }
@@ -73,6 +80,7 @@ static void init_system(void)
 void CreatePuppet() {
 	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
+>>>>>>> 924850b75203e96eb68c273f0664c6acddcf59c4
 }
 
 void CreatePuppetBoxed() {
@@ -111,7 +119,7 @@ void testParticles(void){
 	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
+	particleSystem.AddForce(new SpringAngleForce(particles[3], particles[0], particles[1], 0.5*M_PI, 5.0,1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[3], dist));
 
 }
