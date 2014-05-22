@@ -10,6 +10,7 @@ ParticleSystem::ParticleSystem() {
 	particleIDCounter = 0;
 	forceIDCounter = 0;
 	constraintIDCounter = 0;
+	clsCounter = 0;
 }
 
 // Frees any allocated memory
@@ -40,6 +41,14 @@ int ParticleSystem::AddConstraint(Constraint* constraint) {
 	constraints.push_back(constraint);
 	constraint->m_ID = constraintIDCounter++;
 	return constraint->m_ID;
+}
+
+// Adds a constraint to the system
+// This system will take ownership of the pointer and is therefore responsible for its destruction
+int ParticleSystem::AddCollidableLineSegment(CollidableLineSegment* cls) {
+	collidableLineSegments.push_back(cls);
+	cls->m_ID = clsCounter++;
+	return cls->m_ID;
 }
 
 // Removes a particle from the system
@@ -286,4 +295,7 @@ void ParticleSystem::Clear() {
 	for (auto c = constraints.begin(); c != constraints.end(); c++)
 		delete *c;
 	constraints.clear();
+	for (auto l = collidableLineSegments.begin(); l != collidableLineSegments.end(); l++)
+		delete *l;
+	collidableLineSegments.clear();
 }

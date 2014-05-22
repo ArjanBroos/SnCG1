@@ -54,10 +54,10 @@
     <ClCompile Include="LineConstraint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpringAngleForce.cpp">
+    <ClCompile Include="CollidableLineSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CollidableLineSegment.cpp">
+    <ClCompile Include="ModelReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,10 +143,13 @@
     <ClInclude Include="LineConstraint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpringAngleForce.h">
+    <ClInclude Include="CollidableLineSegment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CollidableLineSegment.h">
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -85,6 +85,7 @@
     <ClCompile Include="imageio.cpp" />
     <ClCompile Include="linearSolver.cpp" />
     <ClCompile Include="LineConstraint.cpp" />
+    <ClCompile Include="ModelReader.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="RodConstraint.cpp" />
@@ -100,7 +101,11 @@
     <ClInclude Include="CollidableLineSegment.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="LineConstraint.h" />
+<<<<<<< HEAD
     <ClInclude Include="SpringAngleForce.h" />
+=======
+    <ClInclude Include="ModelReader.h" />
+>>>>>>> 924850b75203e96eb68c273f0664c6acddcf59c4
     <ClInclude Include="util.h" />
     <ClInclude Include="ViscousDragForce.h" />
     <ClInclude Include="Force.h" />

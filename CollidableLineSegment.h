@@ -11,6 +11,8 @@ class CollidableLineSegment {
   void handleCollision(Particle *p1);
   void handleCollisions(std::vector<Particle*>& p1);
 
+  int m_ID;
+
  private:
 
   Vec2f m_start;

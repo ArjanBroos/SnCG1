@@ -47,6 +47,12 @@ void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 		particles[i]->m_ForceAcc = Vec2f(0.f, 0.f);
 	}
 
+	auto& collidableLineSegments = particleSystem.GetCollidableLineSegment();
+
+	for each (CollidableLineSegment* cls in collidableLineSegments){
+		cls->handleCollisions(particles);
+	}
+
 	// Apply forces
 	for (unsigned i = 0; i < forces.size(); i++) {
 		forces[i]->Apply();
@@ -100,7 +106,7 @@ void ImplicitEulerStep(ParticleSystem& particleSystem, float dt) {
 	// Use conjugate gradient to solve for Delta v
 	std::vector<double> delta_v(dim);
 	implicitMatrix iM(&M);
-	ConjGrad(dim, &iM, &delta_v[0], &result[0], 1e-20f, 0);
+	ConjGrad(dim, &iM, &delta_v[0], &result[0], 1e-30f, 0);
 	
 	// Calculate Delta x
 	std::vector<double> delta_x(dim);

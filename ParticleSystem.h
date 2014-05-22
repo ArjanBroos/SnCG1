@@ -27,6 +27,11 @@ public:
 	// Returns the id of the added constraint
 	int								AddConstraint(Constraint* constraint);
 
+	// Adds a constraint to the system
+	// This system will take ownership of the pointer and is therefore responsible for its destruction
+	// Returns the id of the added constraint
+	int								AddCollidableLineSegment(CollidableLineSegment* cls);
+
 	// Functions for removing parts of the system
 	void							RemoveParticle(int particleID);
 	void							RemoveForce(int forceID);
@@ -66,6 +71,7 @@ private:
 	int								particleIDCounter;
 	int								forceIDCounter;
 	int								constraintIDCounter;
+	int								clsCounter;
 
 	// Not kept locally in functions, to prevent constant reallocation
 	vector<vector<float>>			J;
