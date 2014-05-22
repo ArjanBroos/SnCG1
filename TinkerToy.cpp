@@ -3,6 +3,7 @@
 
 #include "Particle.h"
 #include "SpringForce.h"
+#include "SpringAngleForce.h"
 #include "GravityForce.h"
 #include "RodConstraint.h"
 #include "CircularWireConstraint.h"
@@ -29,6 +30,7 @@ void clothPoints();
 void clothPointLine();
 void CreatePuppet();
 void clothLineLine();
+void CreatePuppetBoxed();
 
 /* global variables */
 
@@ -65,13 +67,26 @@ static void init_system(void)
 	//clothPoints();
 	//clothPointLine();
 	//clothLineLine();
-	CreatePuppet();
+	//CreatePuppet();
+	//clothLineLine();
+	//clothLineLine();
+	//CreatePuppet();
+	CreatePuppetBoxed();
 }
 
 void CreatePuppet() {
 	ModelReader mr(300.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
 	particleSystem.AddConstraint(new LineConstraint(particleSystem.GetParticles()[0], Vec2f(-1.0f, 0.3f), Vec2f(1.f, 0.f)));
+}
+
+void CreatePuppetBoxed() {
+	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
+	mr.ReadModel("puppet.txt", particleSystem);
+	auto& particles = particleSystem.GetParticles();
+	particleSystem.AddConstraint(new LineConstraint(particles[0], Vec2f(0.0,0.4), Vec2f(1.0,0.0)));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(-1.0,-1.0),Vec2f(-1.0,1.0),0.8,0.011));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(1.0,-1.0),Vec2f(1.0,1.0),0.8,0.011));
 }
 
 
@@ -101,7 +116,7 @@ void testParticles(void){
 	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
+	particleSystem.AddForce(new SpringAngleForce(particles[3], particles[0], particles[1], 0.5*M_PI, 5.0,1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[3], dist));
 
 }
@@ -312,7 +327,7 @@ void clothLineLine(void)
 
 	particleSystem.AddConstraint(new LineConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f, -offsetx));
 	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
-	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,0.1),Vec2f(0.2,0.45),10,0.008));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,-0.8),Vec2f(0.2,0.35),0,0.009));
 }
 
 /*

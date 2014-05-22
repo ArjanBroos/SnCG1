@@ -90,6 +90,7 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="RodConstraint.cpp" />
     <ClCompile Include="Solver.cpp" />
+    <ClCompile Include="SpringAngleForce.cpp" />
     <ClCompile Include="SpringForce.cpp" />
     <ClCompile Include="TinkerToy.cpp" />
     <ClCompile Include="ViscousDragForce.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="CollidableLineSegment.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="LineConstraint.h" />
+    <ClInclude Include="SpringAngleForce.h" />
     <ClInclude Include="ModelReader.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="ViscousDragForce.h" />
