@@ -29,6 +29,7 @@ void clothPoints();
 void clothPointLine();
 void CreatePuppet();
 void clothLineLine();
+void CreatePuppetBoxed();
 
 /* global variables */
 
@@ -64,13 +65,23 @@ static void init_system(void)
 	//testParticles();
 	//clothPoints();
 	//clothPointLine();
-	clothLineLine();
+	//clothLineLine();
 	//CreatePuppet();
+	CreatePuppetBoxed();
 }
 
 void CreatePuppet() {
 	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
+}
+
+void CreatePuppetBoxed() {
+	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
+	mr.ReadModel("puppet.txt", particleSystem);
+	auto& particles = particleSystem.GetParticles();
+	particleSystem.AddConstraint(new LineConstraint(particles[0], Vec2f(0.0,0.4), Vec2f(1.0,0.0)));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(-1.0,-1.0),Vec2f(-1.0,1.0),0.8,0.011));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(1.0,-1.0),Vec2f(1.0,1.0),0.8,0.011));
 }
 
 
@@ -311,7 +322,7 @@ void clothLineLine(void)
 
 	particleSystem.AddConstraint(new LineConstraint(particles[0], center-offsetx*((float)particlesx-1)/2.f, -offsetx));
 	particleSystem.AddConstraint(new LineConstraint(particles[particlesy*(particlesx-1)], center+offsetx*((float)particlesx-1)/2.f, offsetx));
-	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,0.1),Vec2f(0.2,0.35),25,0.009));
+	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(0.2,-0.8),Vec2f(0.2,0.35),0,0.009));
 }
 
 /*
