@@ -63,16 +63,11 @@ static void clear_data ( void )
 
 static void init_system(void)
 {
-	testParticles();
+	//testParticles();
 	//clothPoints();
 	//clothPointLine();
-<<<<<<< HEAD
 	//clothLineLine();
-=======
-<<<<<<< HEAD
-=======
-	clothLineLine();
->>>>>>> 02cce3b4e19305e653b17127fd1708c52193238c
+	//clothLineLine();
 	//CreatePuppet();
 	CreatePuppetBoxed();
 }
@@ -80,7 +75,6 @@ static void init_system(void)
 void CreatePuppet() {
 	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
->>>>>>> 924850b75203e96eb68c273f0664c6acddcf59c4
 }
 
 void CreatePuppetBoxed() {
