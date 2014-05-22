@@ -84,7 +84,7 @@ void CreatePuppetBoxed() {
 	ModelReader mr(200.f, 0.85f, true, true, 0.85f);
 	mr.ReadModel("puppet.txt", particleSystem);
 	auto& particles = particleSystem.GetParticles();
-	particleSystem.AddConstraint(new LineConstraint(particles[0], Vec2f(0.0,0.4), Vec2f(1.0,0.0)));
+	particleSystem.AddConstraint(new LineConstraint(particles[0], Vec2f(0.0,0.3), Vec2f(1.0,0.0)));
 	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(-1.0,-1.0),Vec2f(-1.0,1.0),0.8,0.011));
 	particleSystem.AddCollidableLineSegment(new CollidableLineSegment(Vec2f(1.0,-1.0),Vec2f(1.0,1.0),0.8,0.011));
 }

@@ -31,7 +31,7 @@ void CollidableLineSegment::handleCollision(Particle *p1){
 		Vec2f colP = Vec2f(p1->m_Position-(float)times*(p1->m_Velocity)); // point of collision (line-line intersection)
 	
 		double distOfLine = (p1->m_Position-colP)*perp;
-		printf("%f ; %f ; %f\n",dist, times, distOfLine);
+		//printf("%f ; %f ; %f\n",dist, times, distOfLine);
 		if (distOfLine<m_t){ //potential collision (close enough)
 		//if (times <= m_t && times>0){ //potential collision (close enough)
 		
