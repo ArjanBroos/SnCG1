@@ -42,7 +42,7 @@ double AngularConstraint::getC(){
 	if (ans>M_PI){
 		ans = ((ans) - 2*M_PI);
 	}
-	printf("%f\n", ans);
+	//printf("%f\n", ans);
 	//return 0;
 	return ans;
 }
