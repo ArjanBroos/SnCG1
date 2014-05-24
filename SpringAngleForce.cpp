@@ -30,17 +30,25 @@ void SpringAngleForce::Apply() {
 	Vec2f b = m_p2->m_Position - m_joint->m_Position;
 	float lengthb = sqrt(b[0] * b[0] + b[1] * b[1]);
 	b /= lengthb;
-	float restangle = acos(a*b);
-	if ((a[0] * b[1] - a[1] * b[0])>0){
+	float restangle;
+	if (a*b <= -1){
+		restangle = M_PI;
+	}
+	else if (a*b >= 1){
+		restangle = 0;
+	}
+	else{
+		restangle = acos(a*b);
+	}
+	if ((a[0] * b[1] - a[1] * b[0]) > 0){
 		restangle = 2 * M_PI - restangle;
 	}
 	restangle -= m_angle;
-	if (restangle>M_PI){
+	if (restangle > M_PI){
 		restangle = ((restangle)-2 * M_PI);
 	}
-	m_p1->m_ForceAcc += Vec2f(((m_ks*restangle) / (lengtha*2))*a[1], -((m_ks*restangle) / (lengtha*2))* a[0]);
-	m_p2->m_ForceAcc -= Vec2f(b[1] * (m_ks*restangle) / (lengthb*2), -b[0] * (m_ks*restangle) / (lengthb*2));
-
+	m_p1->m_ForceAcc += Vec2f(((m_ks*restangle) / (lengtha * 2))*a[1], -((m_ks*restangle) / (lengtha * 2))* a[0]);
+	m_p2->m_ForceAcc -= Vec2f(b[1] * (m_ks*restangle) / (lengthb * 2), -b[0] * (m_ks*restangle) / (lengthb * 2));
 }
 
 Mat2 SpringAngleForce::GetJacobian(int flags) const {

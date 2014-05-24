@@ -257,7 +257,7 @@ void ParticleSystem::ComputeApplyConstForce(){
 	}
 
 	int d = 100;
-	ConjGrad(constraints.size(), M, lambda, r, 1e-20f, &d);
+	ConjGrad(constraints.size(), M, lambda, r, 1e-30f, &d);
 	delete M;
 	delete[] r;
 
