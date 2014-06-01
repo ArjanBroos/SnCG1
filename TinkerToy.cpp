@@ -135,6 +135,11 @@ void testParticles(void){
 	particleSystem.AddParticle(new Particle(center + offset + offset + offset));
 	particleSystem.AddParticle(new Particle(center + aoffset));
 
+	particleSystem.AddParticle(new Particle(center - offset));
+	particleSystem.AddParticle(new Particle(center - offset - offset));
+	particleSystem.AddParticle(new Particle(center - offset - offset - offset));
+	particleSystem.AddParticle(new Particle(center - aoffset));
+
 	// Add gravity to all particles
 	auto& particles = particleSystem.GetParticles();
 	for (auto p = particles.begin(); p != particles.end(); p++)
@@ -148,8 +153,14 @@ void testParticles(void){
 	particleSystem.AddForce(new SpringForce(particles[1], particles[2], dist, 5.0, 1.0));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[1], dist));
 	particleSystem.AddConstraint(new CircularWireConstraint(particles[0], center, dist));
-	particleSystem.AddForce(new SpringAngleForce(particles[3], particles[0], particles[1], 0.5*M_PI, 5.0,1.0));
+	particleSystem.AddConstraint(new AngularConstraint(particles[3], particles[0], particles[1], 0.5*M_PI));
 	particleSystem.AddConstraint(new RodConstraint(particles[0], particles[3], dist));
+
+	particleSystem.AddForce(new SpringForce(particles[5], particles[6], dist, 5.0, 1.0));
+	particleSystem.AddConstraint(new RodConstraint(particles[4], particles[5], dist));
+	particleSystem.AddConstraint(new CircularWireConstraint(particles[4], center, dist));
+	particleSystem.AddForce(new SpringAngleForce(particles[7], particles[4], particles[5], 0.5*M_PI,0.5,0.5));
+	particleSystem.AddConstraint(new RodConstraint(particles[4], particles[7], dist));
 
 }
 

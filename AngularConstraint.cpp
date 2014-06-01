@@ -20,7 +20,7 @@ void AngularConstraint::Draw() const
 	b = Vec2f( m_joint->m_Position[0] + b[0] * radius, m_joint->m_Position[1] + b[1] * radius );
 	
   glBegin( GL_LINES );
-  glColor3f(0.8, 0.7, 0.6);
+  glColor3f(0.3, 0.8, 0.7);
   glVertex2f( a[0],a[1]);
   glVertex2f( b[0], b[1]);
   glEnd();
@@ -42,8 +42,8 @@ double AngularConstraint::getC(){
 	if (ans>M_PI){
 		ans = ((ans) - 2*M_PI);
 	}
-	//printf("%f\n", ans);
-	//return 0;
+	
+
 	return ans;
 }
 
@@ -69,62 +69,33 @@ vector<Vec2f> AngularConstraint::getJ(){
 	float d = m_p2->m_Position[0];
 	float g = m_p2->m_Position[1];
 	float h = m_joint->m_Position[1];
-	float ans = acos(((b - h) * (g - h) + (a - c) * (d - c)) / (sqrt((b - h) * (b - h) + (a - c) * (a - c))* sqrt((g - h)* (g - h) + (d - c) * (d - c))));
+
 	result.push_back(Vec2f(
-		((b - h) * (b * (c - d) - c * g + a * (g - h) + d * h)) / pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) * (b * c - b * d + a * g - c * g - a * h + d * h) )/ (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))
+		((b - h) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) * (b * c - b * d + a * g - c * g - a * h + d * h) )/ (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
 		,
-		((a - c) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
+		((a - c) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
 		);
-	if (!isnormal(result[result.size() - 1][0])){
-		result[result.size() - 1][0] = 0;
-	}
-	if (!isnormal(result[result.size() - 1][1])){
-		result[result.size() - 1][1] = 0;
-	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][0] = 0;
-	result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
+
 	result.push_back(Vec2f(
-		((g - h) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2) * sqrt((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
+		((g - h) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2) * sqrt((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
 		,
-		-(((c - d) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2 * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h)*(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
+		-(((c - d) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2 * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h)*(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
 		)));
-	if (!isnormal(result[result.size() - 1][0])){
-		result[result.size() - 1][0] = 0;
-	}
-	if (!isnormal(result[result.size() - 1][1])){
-		result[result.size() - 1][1] = 0;
-	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][0] = 0;
-	result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
+
 	result.push_back(Vec2f(
-		-(((-c + d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) + (-a + 2 * c - d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) + (a - c) * ((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h))) / (sqrt(1 - (((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2)))
+		-(((-c + d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) + (-a + 2 * c - d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) + (a - c) * ((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h))) / (sqrt(1 - ((((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2)))
 		,
-		-((((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (b - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) * (g - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (-b - g + 2 * h)) / (sqrt(1 - (((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2)))
+		-((((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (b - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) * (g - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (-b - g + 2 * h)) / (sqrt(1 - ((((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2)))
 		));
-	if (!isnormal(result[result.size() - 1][0])){
-		result[result.size() - 1][0] = 0;
-	}
-	if (!isnormal(result[result.size() - 1][1])){
-		result[result.size() - 1][1] = 0;
-	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][0] = 0;
-	result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
-	//printf("\n\n");
+
+
 	if (((m_p1->m_Position[0] - m_joint->m_Position[0]) * (m_p2->m_Position[1] - m_joint->m_Position[1]) - (m_p1->m_Position[1] - m_joint->m_Position[1]) * (m_p2->m_Position[0] - m_joint->m_Position[0])) > 0){
 		for (int i = 0; i < 3; i++){
 			result[i][0] *= -1;
 			result[i][1] *= -1;
 		}
 	}
+
 	return result;
 }
 
@@ -136,12 +107,12 @@ vector<Vec2f> AngularConstraint::getJdot(){
 	float c = m_joint->m_Velocity[0];
 	float d = m_p2->m_Velocity[0];
 	float g = m_p2->m_Velocity[1];
-	float h = m_joint->m_Velocity[1];	
+	float h = m_joint->m_Velocity[1];
 
 	result.push_back(Vec2f(
-		((b - h) * (b * (c - d) - c * g + a * (g - h) + d * h)) / pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) * (b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))
+		((b - h) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) * (b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
 		,
-		((a - c) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
+		((a - c) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * sqrt((c - d) * (c - d) + (g - h) * (g - h)) * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
 		);
 	if (!isnormal(result[result.size() - 1][0])){
 		result[result.size() - 1][0] = 0;
@@ -149,15 +120,10 @@ vector<Vec2f> AngularConstraint::getJdot(){
 	if (!isnormal(result[result.size() - 1][1])){
 		result[result.size() - 1][1] = 0;
 	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][0] = 0;
-	result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
 	result.push_back(Vec2f(
-		((g - h) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2) * sqrt((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
+		((g - h) * (b * (-c + d) + c * g - d * h + a * (-g + h))) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2) * sqrt((b * c - b * d + a * g - c * g - a * h + d * h) *(b * c - b * d + a * g - c * g - a * h + d * h) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))))
 		,
-		-(((c - d) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2 * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h)*(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
+		-(((c - d) * (b * (c - d) - c * g + a * (g - h) + d * h)) / (sqrt((a - c) * (a - c) + (b - h) * (b - h)) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2 * sqrt(((b * c - b * d + a * g - c * g - a * h + d * h)*(b * c - b * d + a * g - c * g - a * h + d * h)) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))))
 		)));
 	if (!isnormal(result[result.size() - 1][0])){
 		result[result.size() - 1][0] = 0;
@@ -165,34 +131,26 @@ vector<Vec2f> AngularConstraint::getJdot(){
 	if (!isnormal(result[result.size() - 1][1])){
 		result[result.size() - 1][1] = 0;
 	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][0] = 0;
-	result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
 	result.push_back(Vec2f(
-		-(((-c + d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) + (-a + 2 * c - d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) + (a - c) * ((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h))) / (sqrt(1 - (((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2)))
+		-(((-c + d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) + (-a + 2 * c - d) * ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) + (a - c) * ((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h))) / (sqrt(1 - ((((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2)))
 		,
-		-((((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (b - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) * (g - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (-b - g + 2 * h)) / (sqrt(1 - (((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3 / 2)))
+		-((((a - c) * (-c + d) + (b - h) * (g - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (b - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((a - c) * (-c + d) + (b - h) * (g - h)) * (g - h) + ((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h)) * (-b - g + 2 * h)) / (sqrt(1 - ((((a - c) * (-c + d) + (b - h) * (g - h)) * ((a - c) * (-c + d) + (b - h) * (g - h))) / (((a - c) * (a - c) + (b - h) * (b - h)) * ((c - d) * (c - d) + (g - h) * (g - h))))) * pow(((a - c) * (a - c) + (b - h) * (b - h)), 3.0 / 2) * pow(((c - d) * (c - d) + (g - h) * (g - h)), 3.0 / 2)))
 		));
 	if (!isnormal(result[result.size() - 1][0])){
-	result[result.size() - 1][0] = 0;
+		result[result.size() - 1][0] = 0;
 	}
 	if (!isnormal(result[result.size() - 1][1])){
-	result[result.size() - 1][1] = 0;
-	}
-	/*if (!isnormal(result[result.size() - 1][0]) || !isnormal(result[result.size() - 1][1])){
-		result[result.size() - 1][0] = 0;
 		result[result.size() - 1][1] = 0;
-	}*/
-	//printf("%f \t %f\n", result[result.size() - 1][0], result[result.size() - 1][1]);
-	//printf("\n\n\n");
+	}
+
 	if (((m_p1->m_Position[0] - m_joint->m_Position[0]) * (m_p2->m_Position[1] - m_joint->m_Position[1]) - (m_p1->m_Position[1] - m_joint->m_Position[1]) * (m_p2->m_Position[0] - m_joint->m_Position[0])) > 0){
 		for (int i = 0; i < 3; i++){
 			result[i][0] *= -1;
 			result[i][1] *= -1;
 		}
 	}
+
+	
 	return result;
 
 }
